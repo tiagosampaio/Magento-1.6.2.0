@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OsStudios_MultiCarrier>
+            <version>0.1.0.0</version>
+        </OsStudios_MultiCarrier>
+    </modules>
+    <global>
+        <blocks>
+            <class>OsStudios_MultiCarrier_Block</class>
+        </blocks>
+        <models>
+            <class>OsStudios_MultiCarrier_Model</class>
+        </models>
+        <helpers>
+            <class>OsStudios_MultiCarrier_Helper</class>
+        </helpers>
+    </global>
+</config>
