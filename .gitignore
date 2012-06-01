@@ -5,3 +5,4 @@ source/var/full_page_cache/*
 source/var/locks/*
 source/var/log/*
 source/var/session/*
+source/media/catalog/product/cache/*

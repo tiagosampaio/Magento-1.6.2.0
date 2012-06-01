@@ -6,14 +6,30 @@
         </OsStudios_MultiCarrier>
     </modules>
     <global>
+        <helpers>
+            <multicarrier>
+                <class>OsStudios_MultiCarrier_Helper</class>
+            </multicarrier>
+        </helpers>
         <blocks>
-            <class>OsStudios_MultiCarrier_Block</class>
+            <multicarrier>
+                <class>OsStudios_MultiCarrier_Block</class>
+            </multicarrier>
         </blocks>
         <models>
-            <class>OsStudios_MultiCarrier_Model</class>
+            <multicarrier>
+                <class>OsStudios_MultiCarrier_Model</class>
+            </multicarrier>
         </models>
-        <helpers>
-            <class>OsStudios_MultiCarrier_Helper</class>
-        </helpers>
+        <resources>
+            <multicarrier_setup>
+                <setup>
+                    <module>OsStudios_MultiCarrier</module>
+                </setup>
+                <connection>
+                    <use>core_Setup</use>
+                </connection>
+            </multicarrier_setup>
+        </resources>
     </global>
 </config>
