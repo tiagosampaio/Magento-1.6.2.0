@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OsStudios_MultiCarriers>
+            <version>0.1.0.0</version>
+        </OsStudios_MultiCarriers>
+    </modules>
+</config>
