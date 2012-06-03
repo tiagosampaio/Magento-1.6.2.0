@@ -1,3 +1,6 @@
+$ cat .gitignore
+
+source/media/catalog/product/cache/*
 source/var/*
 source/app/etc/local.xml
 source/var/cache/*
