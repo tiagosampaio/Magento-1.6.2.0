@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Pedro Teixeira
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the New BSD License.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.pteixeira.com.br/new-bsd-license/
+ *
+ * @category   PedroTeixeira
+ * @package    PedroTeixeira_Correios
+ * @copyright  Copyright (c) 2011 Pedro Teixeira (http://www.pteixeira.com.br)
+ * @author     Pedro Teixeira <pedro@pteixeira.com.br>
+ * @license    http://www.pteixeira.com.br/new-bsd-license/ New BSD License
+ */
+-->
+<config>
+    <modules>
+        <PedroTeixeira_Correios>
+            <active>true</active>
+            <codePool>community</codePool>
+        </PedroTeixeira_Correios>
+    </modules>
+</config>
