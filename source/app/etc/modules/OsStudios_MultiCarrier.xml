@@ -5,7 +5,7 @@
             <active>true</active>
             <codePool>local</codePool>
             <depends>
-                <Mage_Shipping/>
+              <Mage_Shipping/>
             </depends>
         </OsStudios_MultiCarrier>
     </modules>

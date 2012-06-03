@@ -1,5 +1,5 @@
 <?php
-class OsStudios_MultiCarrier_Model_Abstract extends Mage_Core_Model_Abstract
+abstract class OsStudios_Multicarrier_Model_Abstract extends Mage_Core_Model_Abstract
 {
-    
+	
 }

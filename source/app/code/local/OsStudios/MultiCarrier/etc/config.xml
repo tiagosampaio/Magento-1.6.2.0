@@ -1,35 +1,67 @@
 <?xml version="1.0"?>
 <config>
+	
     <modules>
-        <OsStudios_MultiCarrier>
+        <OsStudios_Multicarrier>
             <version>0.1.0.0</version>
-        </OsStudios_MultiCarrier>
+        </OsStudios_Multicarrier>
     </modules>
+    
     <global>
-        <helpers>
-            <multicarrier>
-                <class>OsStudios_MultiCarrier_Helper</class>
-            </multicarrier>
-        </helpers>
-        <blocks>
-            <multicarrier>
-                <class>OsStudios_MultiCarrier_Block</class>
-            </multicarrier>
-        </blocks>
         <models>
-            <multicarrier>
-                <class>OsStudios_MultiCarrier_Model</class>
-            </multicarrier>
+        	<multicarrier>
+        		<class>OsStudios_Multicarrier_Model</class>
+        	</multicarrier>
         </models>
-        <resources>
-            <multicarrier_setup>
-                <setup>
-                    <module>OsStudios_MultiCarrier</module>
-                </setup>
-                <connection>
-                    <use>core_Setup</use>
-                </connection>
-            </multicarrier_setup>
-        </resources>
     </global>
+    
+    <resources>
+    	<multicarrier_setup>
+    		<setup>
+    			<module>OsStudios_Multicarrier</module>
+    		</setup>
+    		<connection>
+    			<use>core_setup</use>
+			</connection>
+    	</multicarrier_setup>
+    </resources>
+    
+    <default>
+    	<carriers>
+			<braspress>
+		        <active>1</active>
+		        <sort_order>0</sort_order>
+		        <title>Braspress</title>
+		        <methodtitle>Braspress</methodtitle>
+		        <model>OsStudios_Multicarrier_Model_Carrier_Braspress</model>
+		        <gris>0.003</gris>
+		        <toll>2.50</toll>
+		        <tas>2.47</tas>
+		        <administration>0.015</administration>
+			</braspress>
+			<expresso_itauna>
+		        <active>1</active>
+		        <sort_order>1</sort_order>
+		        <title>Expresso Itaúna</title>
+		        <methodtitle>Expresso Itaúna</methodtitle>
+		        <model>OsStudios_Multicarrier_Model_Carrier_Expressoitauna</model>
+			</expresso_itauna>
+			<transamigos>
+		        <active>1</active>
+		        <sort_order>2</sort_order>
+		        <title>Transamigos</title>
+		        <methodtitle>Transamigos</methodtitle>
+		        <model>OsStudios_Multicarrier_Model_Carrier_Transamigos</model>
+			</transamigos>
+			<camilo_santos>
+		        <active>1</active>
+		        <sort_order>3</sort_order>
+		        <title>Camilo dos Santos</title>
+		        <methodtitle>Camilo dos Santos</methodtitle>
+		        <model>OsStudios_Multicarrier_Model_Carrier_Camilosantos</model>
+			</camilo_santos>
+	    </carriers>
+    </default>
+    
+    
 </config>
