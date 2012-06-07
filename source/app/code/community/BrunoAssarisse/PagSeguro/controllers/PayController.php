@@ -132,6 +132,8 @@ class BrunoAssarisse_PagSeguro_PayController extends Mage_Core_Controller_Front_
     {
         $pagseguro = $this->getPagSeguro();
         
+		Mage::log( $this->getRequest(), null, 'return_PagSeguro.log' );
+		
         if ($this->getRequest()->isPost()) {
             // É um $_POST, processa o retorno automático
             
