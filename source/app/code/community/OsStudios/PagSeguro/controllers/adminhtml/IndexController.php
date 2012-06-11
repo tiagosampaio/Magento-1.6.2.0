@@ -16,20 +16,17 @@
  */
 
 /**
- * PagSeguro CMS Return Page Source
+ * PagSeguro Adminhtml Index Controller
  *
  */
 
-class OsStudios_PagSeguro_Model_System_Source_ReturnPage
+class OsStudios_PagSeguro_Adminhtml_IndexController extends Mage_Adminhtml_Controller_Action
 {
-	public function toOptionArray ()
+    
+	public function indexAction()
 	{
-		$collection = Mage::getModel('cms/page')->getCollection();
-		$pages = array();
-		foreach ($collection as $page) {
-			$pages[$page->getIdentifier()] = $page->getTitle();
-		}
-		return $pages;
+		$this->loadLayout()
+			 ->renderLayout();
 	}
-
+    
 }

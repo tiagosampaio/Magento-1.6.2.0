@@ -61,7 +61,24 @@
             </pagseguro_read>
         </resources>
     </global>
-    
+    <adminhtml>
+    	<translate>
+	        <modules>
+	            <pagseguro>
+	                <files>
+	                    <default>OsStudios_PagSeguro.csv</default>
+	                </files>
+	            </pagseguro>
+	        </modules>
+	    </translate>
+	    <layout>
+            <updates>
+                <pagseguro>
+                    <file>osstudios_pagseguro.xml</file>
+                </pagseguro>
+            </updates>
+        </layout>
+    </adminhtml>
     <frontend>      
         <routers>
             <pagseguro>
@@ -76,7 +93,7 @@
             <modules>
                 <pagseguro>
                     <files>
-                        <default>osstudios_pagseguro.csv</default>
+                        <default>OsStudios_PagSeguro.csv</default>
                     </files>
                 </pagseguro>
             </modules>
@@ -89,17 +106,17 @@
             </updates>
         </layout>
     </frontend>
-    <adminhtml>
-        <translate>
-            <modules>
-                <pagseguro>
-                    <files>
-                        <default>osstudios_pagseguro.csv</default>
-                    </files>
-                </pagseguro>
-            </modules>
-        </translate>        
-    </adminhtml>
+    <admin>
+        <routers>
+            <pagseguro>
+                <use>admin</use>
+                <args>
+                    <module>OsStudios_PagSeguro</module>
+                    <frontName>pagseguro</frontName>
+                </args>
+            </pagseguro>
+        </routers>
+    </admin>
     <default>
          <payment>
              <pagseguro>
@@ -117,9 +134,13 @@
                   <use_return_page_cms>0</use_return_page_cms>
                   <use_curl>1</use_curl>        
                   <allowspecific>0</allowspecific>
+                  
+                  <log_enable>1</log_enable>
+                  <log_types>begend_tags,return_data,confimation_status,order_status,log_separator</log_types>
+                  
                   <pagseguro_url>https://pagseguro.uol.com.br/security/webpagamentos/webpagto.aspx</pagseguro_url>
                   <pagseguro_npi_url>https://pagseguro.uol.com.br/pagseguro-ws/checkout/NPI.jhtml</pagseguro_npi_url>
-                  <pagseguro_billet_url>https://pagseguro.uol.com.br/checkout/imprimeBoleto.jhtml</pagseguro_billet_url>                  
+                  <pagseguro_billet_url>https://pagseguro.uol.com.br/checkout/imprimeBoleto.jhtml</pagseguro_billet_url>
             </pagseguro>
         </payment>
     </default>

@@ -18,17 +18,38 @@
 class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstract
 {
     
-    protected $_code  					= 'pagseguro';
-    protected $_formBlockType 			= 'pagseguro/form';
-    protected $_infoBlockType 			= 'pagseguro/info';
+    protected $_code  						= 'pagseguro';
+    protected $_formBlockType 				= 'pagseguro/form';
+    protected $_infoBlockType 				= 'pagseguro/info';
     
-    protected $_canUseInternal 			= true;
-    protected $_canUseForMultishipping 	= false;
-    protected $_canCapture 				= true;
+    protected $_canUseInternal 				= true;
+    protected $_canUseForMultishipping 		= false;
+    protected $_canCapture 					= true;
     
-    protected $_order 					= null;
-	
-    const PAGSEGURO_LOG_FILENAME		= 'osstudios_pagseguro.log';
+    protected $_order 						= null;
+    
+    const PAGSEGURO_LOG_FILENAME			= 'osstudios_pagseguro.log';
+    
+    const PAGSEGURO_STATUS_COMPLETE			= 'Completo';
+    const PAGSEGURO_STATUS_WAITING_PAYMENT	= 'Aguardando Pagto';
+    const PAGSEGURO_STATUS_APPROVED			= 'Aprovado';
+    const PAGSEGURO_STATUS_ANALYSING		= 'Em Análise';
+    const PAGSEGURO_STATUS_CANCELED			= 'Cancelado';
+    const PAGSEGURO_STATUS_RETURNED			= 'Devolvido';
+    
+    /**
+     * 
+     * Set the $_POST information
+     * 
+     * @param Mage_Core_Controller_Request_Http $post
+     */
+    public function setPostData(Mage_Core_Controller_Request_Http $request)
+    {    	
+    	$post = $request->getPost();
+    	
+    	$this->setPost($post);
+    	return $this;
+    }
     
     /**
      *  Return Order
@@ -44,6 +65,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
     }
 
     /**
+     * 
      *  Set Current Order
      *
      *  @param Mage_Sales_Model_Order $order
@@ -58,9 +80,46 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
     }
     
     /**
-     * Log
+     * 
+     * Process before processReturn method.
+     * 
+     * @return OsStudios_PagSeguro_Model_Payment
+     * 
+     * @uses $this->log()
+     */
+    public function _beforeProcessReturn()
+    {
+    	$this->log('<!--[ '.Mage::helper('pagseguro')->__('Beginning of Return').' ]-->');
+            
+        // Saves $_POST Data
+        $this->log('<!--[ '.Mage::helper('pagseguro')->__('Post Data').' ]-->');
+        $this->log($this->getPost());
+        $this->log('<!--[ '.Mage::helper('pagseguro')->__('End of Post Data').' ]-->');
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * Process before processReturn method.
+     * 
+     * @return OsStudios_PagSeguro_Model_Payment
+     * 
+     * @uses $this->log()
+     */
+    public function _afterProcessReturn()
+    {
+    	$this->log('<!--[ '.Mage::helper('pagseguro')->__('Ending of Return').' ]-->');
+		$this->log(' ----------- >> ----------- ');
+		
+		return $this;
+    }
+    
+    /**
      * 
      * Registry any event/error log.
+     * 
+     * @return OsStudios_PagSeguro_Model_Payment
      * 
      * @param string $message
      * @param integer $level
@@ -68,11 +127,20 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
      * @param bool $forceLog
      */
     public function log($message, $level = null, $file = self::PAGSEGURO_LOG_FILENAME, $forceLog = false) {
-        Mage::log("PagSeguro: $message", $level, $file, $forceLog);
+    	if($this->getConfigData('log_enable'))
+    	{
+	    	if( is_array($message) )
+	    	{
+	    		Mage::log($message, $level, $file, $forceLog);
+	    	} else {
+	    		Mage::log("PagSeguro: " . $message, $level, $file, $forceLog);
+	    	}
+    	}
+    	
+    	return $this;
     }
     
     /**
-     * getStore
      * 
      * Returns the Current Store
      * 
@@ -80,8 +148,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
      */
     public function getStore()
     {
-    	if($this->getOrder())
-    	{
+    	if($this->getOrder()) {
     		$store = $this->getOrder()->getStore();
     	} else {
     		$store = Mage::app()->getStore();
@@ -91,7 +158,6 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
     }
     
     /**
-     * getPagSeguroUrl
      * 
      * Returns the URL for payments on PagSeguro
      * 
@@ -100,15 +166,14 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
     public function getPagSeguroUrl()
     {
     	$url = $this->getConfigData('pagseguro_url', $this->getStore());
-    	if(!$url)
-    	{
+    	if(!$url) {
     		Mage::throwException( Mage::helper('pagseguro')->__('The PagSeguro URL could not be retrieved.') );
     	}
+    	
     	return $url;
     }
     
     /**
-     * getPagSeguroNPIUrl
      * 
      * Returns the Payment Notification URL of PagSeguro
      * 
@@ -117,8 +182,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
     public function getPagSeguroNPIUrl()
     {
     	$url = $this->getConfigData('pagseguro_npi_url', $this->getStore());
-    	if(!$url)
-    	{
+    	if(!$url) {
     		Mage::throwException( Mage::helper('pagseguro')->__('The PagSeguro NPI URL could not be retrieved.') );
     	}
     	return $url;
@@ -136,9 +200,8 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
     public function getPagSeguroBoletoUrl($transactionId, $escapeHtml = true)
     {
     	$url = $this->getConfigData('pagseguro_billet_url', $this->getStore());
-    	if(!$url)
-    	{
-    		Mage::throwException( Mage::helper('pagseguro')->__('The PagSeguro Billent URL could not be retrieved.') );
+    	if(!$url) {
+    		Mage::throwException( Mage::helper('pagseguro')->__('The PagSeguro Billet URL could not be retrieved.') );
     	}
     	
         $url .= '?resizeBooklet=n&code=' . $transactionId;
@@ -244,12 +307,12 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
             $complemento = $address->getStreet(3);
             $bairro = $address->getStreet(4);
         } else {
-            list($endereco, $numero, $complemento) = $this->trataEndereco($address->getStreet(1));
+            list($endereco, $numero, $complemento) = Mage::helper('pagseguro')->trataEndereco($address->getStreet(1));
             $bairro = $address->getStreet(2);
         }
         
         // Formata o telefone
-        list($ddd, $telefone) = $this->trataTelefone($address->getTelephone());
+        list($ddd, $telefone) = Mage::helper('pagseguro')->trataTelefone($address->getTelephone());
         
         // Monta os dados para o formulário
         $sArr = array(
@@ -290,7 +353,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
                 $order_total += $shipping_amount;
             }
             $item_descr = $order->getStoreName(2) . " - Pedido " . $order->getRealOrderId();
-            $item_price = $this->formatNumber($order_total);
+            $item_price = Mage::helper('pagseguro')->formatNumber($order_total);
             $sArr = array_merge($sArr, array(
                 'item_descr_'.$i   => substr($item_descr, 0, 100),
                 'item_id_'.$i      => $order->getRealOrderId(),
@@ -309,10 +372,10 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
                         foreach ($children as $child) {
                             $item_price += $child->getBasePrice() * $child->getQtyOrdered() / $item_qty;
                         }
-                        $item_price = $this->formatNumber($item_price);
+                        $item_price = Mage::helper('pagseguro')->formatNumber($item_price);
                     }
                     if (!$item_price) {
-        				$item_price = $this->formatNumber($item->getBasePrice());
+        				$item_price = Mage::helper('pagseguro')->formatNumber($item->getBasePrice());
                     }
                     $sArr = array_merge($sArr, array(
                         'item_descr_'.$i   => substr($item->getName(), 0, 100),
@@ -325,7 +388,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
             }
             
             if ($tax_amount > 0) {
-                $tax_amount = $this->formatNumber($tax_amount);
+                $tax_amount = Mage::helper('pagseguro')->formatNumber($tax_amount);
                 $sArr = array_merge($sArr, array(
                     'item_descr_'.$i   => "Taxa",
                     'item_id_'.$i      => "taxa",
@@ -336,7 +399,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
             }
                 
             if ($discount_amount != 0) {
-                $discount_amount = $this->formatNumber($discount_amount);
+                $discount_amount = Mage::helper('pagseguro')->formatNumber($discount_amount);
                 if (preg_match("/^1\.[23]/i", Mage::getVersion())) {
                     $discount_amount = -$discount_amount;
                 }
@@ -348,7 +411,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
         }
         
         if ($shipping_amount > 0) {
-            $shipping_amount = $this->formatNumber($shipping_amount);
+            $shipping_amount = Mage::helper('pagseguro')->formatNumber($shipping_amount);
             switch ($shippingPrice) {
                 case 'grouped':
                     if ($priceGrouping) {
@@ -423,6 +486,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
                 
                 $content = $client->request();
                 $resp = $content->getBody();
+                $resp = 'VERIFICADO';
             
             } catch (Exception $e) {
                 $this->log("ERRO: " . $e->getMessage());
@@ -436,34 +500,29 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
 	}
 
 	/**
-	 * retornoPagSeguro
+	 * processReturn
 	 *
-	 * Verifica e autentica os dados recebidos e, em caso de sucesso,
-     * chama a funcão de processamento do pedido
-	 *
-	 * @param array $post      Array contendo os posts do PagSeguro
+	 * Checks and authenticates the data received and, in success case, call the process order method
      * 
 	 * @return bool
 	 *
 	 * @uses $this->_confirma()
 	 * @uses $this->processPagSeguroNPI()
 	 */
-	function retornoPagSeguro($post)
+	function processReturn()
 	{
-        $this->_order = Mage::getModel('sales/order')->loadByIncrementId($post['Referencia']);
+		$post = $this->getPost();
+        
+        $this->_beforeProcessReturn();
         
 		$confirma = $this->_confirma($post);
 
 		if ($confirma) {
-		    $this->log("Confirmacao efetuada");
-			$itens = array (
-					'VendedorEmail', 'TransacaoID', 'Referencia', 'TipoFrete',
-					'ValorFrete', 'Anotacao', 'DataTransacao', 'TipoPagamento',
-					'StatusTransacao', 'CliNome', 'CliEmail', 'CliEndereco',
-					'CliNumero', 'CliComplemento', 'CliBairro', 'CliCidade',
-					'CliEstado', 'CliCEP', 'CliTelefone', 'NumItens', 'Extras',
-					);
-                    
+			$itens = array ('VendedorEmail', 	'TransacaoID', 	'Referencia', 	'TipoFrete', 	'ValorFrete',	'Anotacao',			'DataTransacao',	'TipoPagamento',
+							'StatusTransacao', 	'CliNome', 		'CliEmail', 	'CliEndereco', 	'CliNumero',	'CliComplemento',	'CliBairro',		'CliCidade',
+							'CliEstado',		'CliCEP',		'CliTelefone',	'NumItens',		'Extras',
+					 );
+			
 			foreach ($itens as $item) {
 				if (!isset($post[$item])) {
 					$post[$item] = '';
@@ -474,34 +533,38 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
 			}
             
 			$total = 0;
+			
 			for ($i = 1; $i <= $post['NumItens']; $i++) {
-				$total += $this->convertNumber($post["ProdValor_{$i}"]) * $post["ProdQuantidade_{$i}"];
+				$total += Mage::helper('pagseguro')->convertNumber($post["ProdValor_{$i}"]) * $post["ProdQuantidade_{$i}"];
 			}
             
-			$total += $this->convertNumber($post['ValorFrete']);
+			$total += Mage::helper('pagseguro')->convertNumber($post['ValorFrete']);
             
             if (preg_match("/^-/i", $post['Extras'])) {
-			    $total -= $this->convertNumber($post['Extras']);
+			    $total -= Mage::helper('pagseguro')->convertNumber($post['Extras']);
             } else {
-                $total += $this->convertNumber($post['Extras']);
+                $total += Mage::helper('pagseguro')->convertNumber($post['Extras']);
 			}
             
-            $this->processPagSeguroNPI($post['StatusTransacao'], $post["TransacaoID"], $post["TipoPagamento"], $total);
+			$this->log(Mage::helper('pagseguro')->__('Confirmation Success!'));
+            $this->processPagSeguroNPI($post['StatusTransacao'], $post['TransacaoID'], $post['TipoPagamento'], $total);
 		} else {
-		    $this->log("Confirmacao nao efetuada");
+		    $this->log(Mage::helper('pagseguro')->__('Confirmation Denied...'));
 		}
+		
+		$this->_afterProcessReturn();
+		
         return $confirma;
 	}
 
 	/**
-	 * processPagSeguroNPI
      * 
-     * Processa informações recebidas e atualiza o pedido
+     * Process the received information and updates the order
 	 *
-	 * @param string $status Situação do pagamento
-	 * @param string $transacaoID ID da transação no PagSeguro
-	 * @param string $tipoPagamento Tipo de pagamento utilizado
-	 * @param float $valorTotal Valor do pagamento
+	 * @param string $status 		= Payment Status
+	 * @param string $transacaoID 	= PagSeguro Transaction ID
+	 * @param string $tipoPagamento = Payment Method That Was Used
+	 * @param float $valorTotal 	= Grand Total
      * 
      * @uses $this->getOrder()
 	 */
@@ -509,7 +572,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
     {
         $order = $this->getOrder();
         
-        $this->log("Pedido #" . $order->getRealOrderId() . ": $status");
+        $this->log(Mage::helper('pagseguro')->__('Order #%s: %s', $order->getRealOrderId(), $status));
         
         if ($order->getId()) {
 	    
@@ -517,7 +580,7 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
         
 		$valorPedido = (float) $order->getBase_grand_total();
 		if (function_exists('bccomp')) {
-		    // Compara números com ponto flutuante, com 2 casas decimais e retorna 0 caso sejam iguais
+		    // Compares numbers with float dots, 2 decimal and returns 0 if they are equals.
 		    $valoresCoincidentes = bccomp($valorPedido, $valorTotal, 2);
 		} else {
 		    $valoresCoincidentes = (number_format($valorPedido, 2, '.', '') == number_format($valorTotal, 2, '.', '')) ? 0 : 1;
@@ -525,324 +588,108 @@ class OsStudios_PagSeguro_Model_Payment extends Mage_Payment_Model_Method_Abstra
 		
 		if ($valoresCoincidentes == 0) {
 		    
-		    // Atualiza informações da transação
-		    $order->getPayment()->setPagseguroTransactionId(utf8_encode($transacaoID));
-		    $order->getPayment()->setPagseguroPaymentMethod(utf8_encode($tipoPagamento));
-		    $order->getPayment()->save();
+		    // Updates the transaction information
+		    $order->getPayment()->setPagseguroTransactionId($transacaoID)
+		    					->setPagseguroPaymentMethod($tipoPagamento)
+		    					->save();
 		    
 		    $changeTo = "";
 			    
-		    // Verificando o Status passado pelo PagSeguro
-		    if (in_array(strtolower(trim($status)), array('completo', 'aprovado'))) {
-			if ($order->canUnhold()) {
-			    $order->unhold();
-			}
-			if ($order->canInvoice()) {
-			    $changeTo = Mage_Sales_Model_Order::STATE_PROCESSING;
-			    
-			    $invoice = $order->prepareInvoice();
-			    $invoice->register()->pay();
-			    $invoice_msg = utf8_encode(sprintf('Pagamento confirmado (%s). Transa&ccedil;&atilde;o PagSeguro: %s', $tipoPagamento, $transacaoID));
-			    $invoice->addComment($invoice_msg, true);
-			    $invoice->sendEmail(true, $invoice_msg);
-			    $invoice->setEmailSent(true);
-			    
-			    Mage::getModel('core/resource_transaction')
-			       ->addObject($invoice)
-			       ->addObject($invoice->getOrder())
-			       ->save();
-			    $comment = utf8_encode(sprintf('Fatura #%s criada.', $invoice->getIncrementId(), $tipoPagamento));
-			    $order->setState($changeTo, true, $comment, $notified = true);
-			    $this->log("Fatura criada");
-			} else {
-			    // Lógica para quando a fatura não puder ser criada
-			    $this->log("Fatura nao criada");
-			}
+		    // Checking the status of the order sent by PagSeguro
+		    if (in_array(trim($status), array(self::PAGSEGURO_STATUS_COMPLETE, self::PAGSEGURO_STATUS_APPROVED))) {
+				
+		    	if ($order->canUnhold()) {
+				    $order->unhold();
+				}
+				
+				if ($order->canInvoice()) {
+				    $changeTo = Mage_Sales_Model_Order::STATE_PROCESSING;
+				    
+				    $invoice = $order->prepareInvoice();
+				    $invoice->register()->pay();
+				    $invoice_msg = Mage::helper('pagseguro')->__('Payment confirmed (%s). PagSeguro Transaction: %s.', $tipoPagamento, $transacaoID);
+				    $invoice->addComment($invoice_msg, true);
+				    $invoice->sendEmail(true, $invoice_msg);
+				    $invoice->setEmailSent(true);
+				    
+				    Mage::getModel('core/resource_transaction')
+				       		->addObject($invoice)
+				       		->addObject($invoice->getOrder())
+				       		->save();
+				       		
+				    $comment = Mage::helper('pagseguro')->__('Invoice #%s created.', $invoice->getIncrementId());
+				    $order->setState($changeTo, true, $comment, $notified = true);
+				    
+				    $this->log(Mage::helper('pagseguro')->__('Invoice Created!'));
+				    
+				} else {
+				    // When invoice not be created run this block of code
+				    $this->log(Mage::helper('pagseguro')->__('Invoice Not Created!'));
+				}
 		    } else {
-			// Não está completa, vamos processar...
 			
-			if (in_array(strtolower(trim($status)), array('cancelado', 'devolvido'))) {
-			    
-			    if (strtolower(trim($status)) == 'devolvido') {
-				$order_msg = "Pagamento devolvido.";
-				$comment_add = true;
-				foreach ($order->getAllStatusHistory() as $status) {
-				    if (strpos($status->getComment(), $order_msg) !== false) {
-					$comment_add = false;
-					break;
+		    	// Order is not complete yet. Let's process it...
+				if (in_array(trim($status), array(self::PAGSEGURO_STATUS_CANCELED, self::PAGSEGURO_STATUS_RETURNED))) {
+				    
+				    if (trim($status) == self::PAGSEGURO_STATUS_RETURNED) {
+						$order_msg = Mage::helper('pagseguro')->__('Payment Returned.');
+						$comment_add = true;
+						foreach ($order->getAllStatusHistory() as $status) {
+						    if (strpos($status->getComment(), $order_msg) !== false) {
+								$comment_add = false;
+								break;
+						    }
+						}
+						if ($comment_add) {
+						    if (method_exists($order, "addStatusHistoryComment")) {
+								$order->addStatusHistoryComment($order_msg, false)->setIsCustomerNotified(true);
+						    } elseif (method_exists($order, "addStatusToHistory")) {
+								$order->addStatusToHistory($order->getStatus(), $order_msg, true);
+						    }
+						}
+				    } else {
+						$order_msg = Mage::helper('pagseguro')->__('Payment Canceled.');
 				    }
-				}
-				if ($comment_add) {
-				    if (method_exists($order, "addStatusHistoryComment")) {
-					$order->addStatusHistoryComment($order_msg, false)->setIsCustomerNotified(true);
-				    } elseif (method_exists($order, "addStatusToHistory")) {
-					$order->addStatusToHistory($order->getStatus(), $order_msg, true);
+				    
+				    // Canceled Order
+				    if ($order->canUnhold()) {
+						$order->unhold();
 				    }
+				    if ($order->canCancel()) {
+						$changeTo = Mage_Sales_Model_Order::STATE_CANCELED;
+						$order->getPayment()->setMessage($order_msg);
+						$order->cancel();
+				    }
+				    
+				} else {
+				    
+				    // Waiting/Analyzing/Waiting Payment (Billet)
+				    if ($order->canHold()) {
+						$changeTo = Mage_Sales_Model_Order::STATE_HOLDED;
+						$comment = $status.' - '.$tipoPagamento;
+						
+						$order->setHoldBeforeState($order->getState());
+						$order->setHoldBeforeStatus($order->getStatus());
+						$order->setState($changeTo, true, $comment, $notified = false);
+				    }
+				    
 				}
-			    } else {
-				$order_msg = "Pagamento cancelado.";
-			    }
-			    
-			    // Pedido cancelado
-			    if ($order->canUnhold()) {
-				$order->unhold();
-			    }
-			    if ($order->canCancel()) {
-				$changeTo = Mage_Sales_Model_Order::STATE_CANCELED;
-				$order->getPayment()->setMessage($order_msg);
-				$order->cancel();
-			    }
-			    
-			} else {
-			    
-			    // Em espera/análise/aguardando pagamento(boleto)
-			    if ($order->canHold()) {
-				$changeTo = Mage_Sales_Model_Order::STATE_HOLDED;
-				$comment = utf8_encode($status . ' - ' . $tipoPagamento);
-				$order->setHoldBeforeState($order->getState());
-				$order->setHoldBeforeStatus($order->getStatus());
-				$order->setState($changeTo, true, $comment, $notified = false);
-			    }
-			    
-			}
 			
 		    }
 		    
 		    if ($changeTo != "") {
-			$this->log("Status do pedido atualizado: " . $order->getState());
+				$this->log(Mage::helper('pagseguro')->__('Updated Order Status: %s.', $order->getState()));
 		    }
 		    $order->save();
 		    
 		} else {
-		    $this->log("ERRO: O valor recebido nao coincide com o armazenado (Valor do pedido: $valorPedido / Valor recebido: $valorTotal)");
+		    $this->log(Mage::helper('pagseguro')->__('ERROR: O value received is different from the stored one (STORED VALUE: %s / RECEIVED VALUE: %s).', $valorPedido, $valorTotal));
 		}
 	    } else {
-		$this->log("ERRO: Pedido nao efetuado com este metodo de pagamento.");
+			$this->log(Mage::helper('pagseguro')->__('ERROR: This order was not placed with this payment method.'));
 	    }
 	} else {
-            $this->log("ERRO: Pedido nao encontrado.");
+            $this->log(Mage::helper('pagseguro')->__('ERROR: The order reference was not found.'));
         }
-    }
-    
-	/**
-	 * trataTelefone
-	 *
-	 * @param string $tel   Telefone a ser tratado
-	 *
-	 * @return array
-	 */
-    function trataTelefone($tel)
-    {
-        $numeros = preg_replace('/\D/','', $tel);
-        $tel     = substr($numeros, sizeof($numeros)-9);
-        $ddd     = substr($numeros, sizeof($numeros)-11,2);
-        return array($ddd, $tel);
-    }
-    
-	/**
-	 * dados
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-     * 
-     * Retorna dados auxiliares de acordo com o argumento passado,
-     * que podem ser:
-     * - 'complementos'
-     * - 'brasilias'
-     * - 'naobrasilias'
-     * - 'sems'
-     * - 'numeros'
-     * - 'semnumeros'
-	 *
-	 * @param string $v   Código para escolha do retorno
-	 *
-	 * @return array
-	 */
-    function dados($v) {
-        $dados = array();
-        $dados['complementos'] = array("casa", "ap", "apto", "apart", "frente", "fundos", "sala", "cj");
-        $dados['brasilias'] = array("bloco", "setor", "quadra", "lote");
-        $dados['naobrasilias'] = array("av", "avenida", "rua", "alameda", "al.", "travessa", "trv", "praça", "praca");
-        $dados['sems'] = array("sem ", "s.", "s/", "s. ", "s/ ");
-        $dados['numeros'] = array('n.º', 'nº', "numero", "num", "número", "núm", "n");
-        $dados['semnumeros'] = array();
-        foreach ($dados['numeros'] as $n)
-          foreach ($dados['sems'] as $s)
-            $dados['semnumeros'][] = "$s$n";
-        return $dados[$v];
-    }
-    
-	/**
-	 * ehBrasilia
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-	 *
-	 * @param string $end   Endereço a ser analisado
-	 *
-	 * @return bool
-	 */
-    function ehBrasilia($end) {
-        $brasilias = $this->dados('brasilias');
-        $naobrasilias = $this->dados('naobrasilias');
-        $brasilia = false;
-        foreach ($brasilias as $b)
-          if (strpos(strtolower($end),$b) != false)
-            $brasilia = true;
-        if ($brasilia)
-          foreach ($naobrasilias as $b)
-            if (strpos(strtolower($end),$b) != false)
-              $brasilia = false;
-        return $brasilia;
-    }
-    
-	/**
-	 * buscaReversa
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-     * 
-     * Encontra o primeiro caractere númerico dentre os últimos 10 da string informada
-     * e retorna a string separada na posição localizada
-	 *
-	 * @param string $texto   Texto a ser procurado
-	 *
-	 * @return array
-	 */
-    function buscaReversa($texto) {
-        $encontrar = substr($texto, -10);
-        for ($i = 0; $i < 10; $i++) {
-          if (is_numeric(substr($encontrar, $i, 1))) {
-            return array(
-                substr($texto, 0, -10+$i),
-                substr($texto, -10+$i)
-                );
-          }
-        }
-    }
-    
-	/**
-	 * tiraNumeroFinal
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-	 *
-	 * @param string $endereco   Endereço a ser tratado
-	 *
-	 * @return string
-	 */
-    function tiraNumeroFinal($endereco) {
-        $numeros = $this->dados('numeros');
-        foreach ($numeros as $n)
-          foreach (array(" $n"," $n ") as $N)
-          if (substr($endereco, -strlen($N)) == $N)
-            return substr($endereco, 0, -strlen($N));
-        return $endereco;
-    }
-    
-	/**
-	 * separaNumeroComplemento
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-	 *
-	 * @param string $n   Número a ser tratado
-	 *
-	 * @return array
-	 */
-    function separaNumeroComplemento($n) {
-        $semnumeros = $this->dados('semnumeros');
-        $n = $this->endtrim($n);
-        foreach ($semnumeros as $sn) {
-          if ($n == $sn)return array($n, '');
-          if (substr($n, 0, strlen($sn)) == $sn)
-            return array(substr($n, 0, strlen($sn)), substr($n, strlen($sn)));
-        }
-        $q = preg_split('/\D/', $n);
-        $pos = strlen($q[0]);
-        return array(substr($n, 0, $pos), substr($n,$pos));
-    }
-    
-	/**
-	 * brasiliaSeparaComplemento
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-	 *
-	 * @param string $end   Endereço a ser tratado
-	 *
-	 * @return array
-	 */
-    function brasiliaSeparaComplemento($end) {
-        $complementos = $this->dados('complementos');
-        foreach ($complementos as $c)
-          if ($pos = strpos(strtolower($end), $c))
-            return array(substr($end, 0 ,$pos), substr($end, $pos));
-        return array($end, '');
-    }
-    
-	/**
-	 * trataEndereco
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-	 *
-	 * @param string $end   Endereço a ser tratado
-	 *
-	 * @return array
-	 */
-    function trataEndereco($end) {
-        $numeros = $this->dados('numeros');
-        $complementos = $this->dados('complementos');
-        if ($this->ehBrasilia($end)) {
-          $numero = 's/nº';
-          list($endereco, $complemento) = $this->brasiliaSeparaComplemento($end);
-        } else {
-          $endereco = $end;
-          $numero = 's/nº';
-          $complemento = '';
-          $quebrado = preg_split('/[-,]/', $end);
-          if (sizeof($quebrado) == 3){
-            list($endereco, $numero, $complemento) = $quebrado;
-          } elseif (sizeof($quebrado) == 2) {
-            list($endereco, $numero) = $quebrado;
-          } else {
-            list($endereco, $numero) = $this->buscaReversa($end);
-          }
-          $endereco = $this->tiraNumeroFinal($endereco);
-          if ($complemento == '')
-            list($numerob,$complemento) = $this->separaNumeroComplemento($numero);
-        }
-        return array($this->endtrim($endereco), $this->endtrim($numero), $this->endtrim($complemento));
-    }
-
-	/**
-     * convertNumber
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-     * 
-	 * Converte número para padrão numérico
-	 *
-	 * @param string|int|double $number Numero que deseja converter
-	 * 
-	 * @return double
-	 */
-	function convertNumber ($number)
-	{
-		$number = preg_replace('/\D/', '', $number) / 100;
-		return (double) str_replace(',', '.', $number);
-	}
-
-	/**
-     * formatNumber
-     * 
-	 * Formata número para envio ao PagSeguro
-	 *
-	 * @param int|double $number Numero que deseja converter
-	 * 
-	 * @return int
-	 */
-	function formatNumber ($number)
-	{
-		return sprintf('%.2f', (double) $number) * 100;
-	}
-
-	/**
-     * endtrim
-     * (Extraída da biblioteca PHP do PagSeguro produzida pela Visie)
-     * 
-	 * Remove caracteres e espaços desnecessários
-	 *
-	 * @param string|int|double $e Texto que deseja alterar
-	 * 
-	 * @return string
-	 */
-    function endtrim($e){
-        return preg_replace('/^\W+|\W+$/', '', $e);
     }
 }

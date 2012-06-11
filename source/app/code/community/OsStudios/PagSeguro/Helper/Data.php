@@ -20,7 +20,7 @@
  *
  */
 
-class OsStudios_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract
+class OsStudios_PagSeguro_Helper_Data extends OsStudios_PagSeguro_Helper_Visie
 {
     
     const PARCEL_MAX_VALUE = 5;
@@ -195,6 +195,21 @@ class OsStudios_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract
     
     public function ceiling($value, $precision = 0) {
         return ceil($value * pow(10, $precision)) / pow(10, $precision);
+    }
+    
+	/**
+	 * trataTelefone
+	 *
+	 * @param string $tel   Telefone a ser tratado
+	 *
+	 * @return array
+	 */
+    function trataTelefone($tel)
+    {
+        $numeros = preg_replace('/\D/','', $tel);
+        $tel     = substr($numeros, sizeof($numeros)-9);
+        $ddd     = substr($numeros, sizeof($numeros)-11,2);
+        return array($ddd, $tel);
     }
     
 }

@@ -132,20 +132,19 @@ class OsStudios_PagSeguro_PayController extends Mage_Core_Controller_Front_Actio
     public function returnAction()
     {
         $pagseguro = $this->getPagSeguro();
-		
-        if ($this->getRequest()->isPost()) {
+		$request = $this->getRequest();
+        
+        if ($request->isPost()) {
+        	
+        	$post = $request->getPost();
+        	
             // That is a $_POST. Process Automatic Return.
-            $pagseguro->log( $this->__('[ Beginning of Return ]') );
-            
-            // Saves $_POST Data
-            $pagseguro->log($this->__('[ Post Data ]'));
-            $pagseguro->log($this->getRequest()->getPost());
-            $pagseguro->log($this->__('[ End of Post Data ]'));
-            
-            $pagseguro->retornoPagSeguro($this->getRequest()->getPost());
-            $pagseguro->log( $this->__('[ Ending of Return ]'));
+            $pagseguro->setPostData($request)
+            		  ->setOrder(Mage::getModel('sales/order')->loadByIncrementId($post['Referencia']))
+            		  ->processReturn();
             
         } else {
+        	
             // That is a $_GET. Redirect to set page.
             $orderId = Mage::getSingleton("core/session")->getPagseguroOrderId();
             

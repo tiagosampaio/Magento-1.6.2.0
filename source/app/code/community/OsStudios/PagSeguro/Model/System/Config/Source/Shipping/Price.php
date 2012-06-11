@@ -20,15 +20,15 @@
  *
  */
 
-class OsStudios_PagSeguro_Model_System_Source_Shipping
+class OsStudios_PagSeguro_Model_System_Config_Source_Shipping_Price
 {
 	public function toOptionArray ()
 	{
 		$options = array();
         
-        $options['separated'] 	= Mage::helper('pagseguro')->__('Separated');
-        $options['product'] 	= Mage::helper('pagseguro')->__('As Product');
-        $options['grouped'] 	= Mage::helper('pagseguro')->__('Grouped');
+        $options[] = array('value' => 'separated'	, 'label' => Mage::helper('pagseguro')->__('Separated'));
+        $options[] = array('value' => 'product'		, 'label' => Mage::helper('pagseguro')->__('As Product'));
+        $options[] = array('value' => 'grouped'		, 'label' => Mage::helper('pagseguro')->__('Grouped'));
         
 		return $options;
 	}
