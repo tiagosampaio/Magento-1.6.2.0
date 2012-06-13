@@ -45,7 +45,7 @@ class OsStudios_PagSeguro_Block_Paylink extends Mage_Core_Block_Template
      */
     public function getPagSeguro()
     {
-        return Mage::getSingleton('brunoassarisse_pagseguro/payment');
+        return Mage::getSingleton('pagseguro/payment');
     }
 
     /**

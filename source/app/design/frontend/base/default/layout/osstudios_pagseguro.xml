@@ -24,7 +24,7 @@
             <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
         </reference>
         <reference name="content">
-            <block type="pagseguro/success" name="pagseguro.success" template="pagseguro/success.phtml"/>
+            <block type="pagseguro/success" name="pagseguro.success" template="osstudios_pagseguro/success.phtml"/>
         </reference>
     </pagseguro_pay_success>
     
