@@ -15,16 +15,16 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-class OsStudios_PagSeguro_Model_Payment extends OsStudios_PagSeguro_Model_Abstract
+class OsStudios_PagSeguro_Model_Hpp extends OsStudios_PagSeguro_Model_Abstract
 {
     
-    protected $_code  						= 'pagseguro';
+    protected $_code  					= 'pagseguro_hpp';
     protected $_formBlockType 				= 'pagseguro/form';
     protected $_infoBlockType 				= 'pagseguro/info';
     
     protected $_canUseInternal 				= true;
-    protected $_canUseForMultishipping 		= false;
-    protected $_canCapture 					= true;
+    protected $_canUseForMultishipping                  = false;
+    protected $_canCapture 				= true;
     
     
     /**
@@ -188,7 +188,8 @@ class OsStudios_PagSeguro_Model_Payment extends OsStudios_PagSeguro_Model_Abstra
         // Monta os dados para o formulário
         $sArr = array(
                 //'encoding'          => 'utf-8',
-                'email_cobranca'    => $this->getConfigData('account_email', $order->getStoreId()),
+                //'email_cobranca'    => $this->getConfigData('account_email', $order->getStoreId()),
+                'email_cobranca'    => Mage::getStoreConfig('payment/pagseguro_config/account_email', $order->getStoreId()),
                 'Tipo'              => "CP",
                 'Moeda'             => "BRL",
                 'ref_transacao'     => $order->getRealOrderId(),

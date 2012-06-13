@@ -52,7 +52,7 @@ class OsStudios_PagSeguro_Block_Success extends Mage_Core_Block_Template
      */
     public function getPagSeguro()
     {
-        return Mage::getSingleton('pagseguro/payment');
+        return Mage::getSingleton('pagseguro/hpp');
     }
 
     /**

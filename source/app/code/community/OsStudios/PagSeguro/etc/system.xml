@@ -21,25 +21,74 @@
 	<sections>
         <payment translate="label" module="payment">
 			<groups>
-		      	<pagseguro translate="label">
-					<label>PagSeguro - Os Studios</label>
-					<sort_order>30</sort_order>
+                            
+                            <pagseguro_config translate="label">
+                                <label>PagSeguro General Configuration</label>
+                                <sort_order>30</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                                <comment>
+                                    <![CDATA[
+                                        Module Version: 1.0.0<br/>
+                                        Developed by <b>Tiago Sampaio</b> (<a href="mailto:tiago.sampaio@osstudios.com.br">tiago.sampaio@osstudios.com.br</a><br/>
+                                        Thanks for downloading our module. Visit Os Studios Website at <a href="http://www.osstudios.com.br" target="_blank">http://www.osstudios.com.br</a>
+                                        <br/><br/>
+
+                                            Versão do Módulo: 1.0.0<br/>
+                                        Desenvolvido por <b>Tiago Sampaio</b> (<a href="mailto:tiago.sampaio@osstudios.com.br">tiago.sampaio@osstudios.com.br</a><br/>
+                                        Obrigado por baixar nosso módulo. Visite o website da Os Studios em <a href="http://www.osstudios.com.br" target="_blank">http://www.osstudios.com.br</a>
+                                        <br/><br/><hr />
+                                    ]]>
+                                </comment>
+                                <fields>
+                                    <account_email translate="label">
+					<label>PagSeguro Account E-mail</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>4</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+                                    </account_email>
+                                    <token translate="label, comment">
+                                        <label>Token</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>5</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+                                        <comment>To activate automatic return from PagSeguro access your account and generate a token code and paste it here.</comment>
+                                    </token>
+                                    <log_enable translate="label">
+                                        <label>Enable Logging</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                                        <sort_order>56</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </log_enable>
+                                    <log_types translate="label">
+                                        <label>Log Types</label>
+                                        <frontend_type>multiselect</frontend_type>
+                                        <source_model>pagseguro/system_config_source_log_types</source_model>
+                                        <sort_order>57</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                        <depends>
+                                            <log_enable>1</log_enable>
+                                        </depends>
+                                    </log_types>
+                                </fields>
+                            </pagseguro_config>
+                            
+		      	<pagseguro_hpp translate="label">
+					<label>PagSeguro - HPP</label>
+					<sort_order>31</sort_order>
 					<show_in_default>1</show_in_default>
 				  	<show_in_website>1</show_in_website>
 				  	<show_in_store>1</show_in_store>
-                    <comment>
-                        <![CDATA[
-                            Module Version: 1.0.0<br/>
-                            Developed by <b>Tiago Sampaio</b> (<a href="mailto:tiago.sampaio@osstudios.com.br">tiago.sampaio@osstudios.com.br</a><br/>
-                            Thanks for downloading our module. Visit Os Studios Website at <a href="http://www.osstudios.com.br" target="_blank">http://www.osstudios.com.br</a>
-                            <br/><br/>
-                            
-                          	Versão do Módulo: 1.0.0<br/>
-                            Desenvolvido por <b>Tiago Sampaio</b> (<a href="mailto:tiago.sampaio@osstudios.com.br">tiago.sampaio@osstudios.com.br</a><br/>
-                            Obrigado por baixar nosso módulo. Visite o website da Os Studios em <a href="http://www.osstudios.com.br" target="_blank">http://www.osstudios.com.br</a>
-                            <br/><br/><hr />
-                        ]]>
-                    </comment>
 				  	
 					<fields>
 				      	<active translate="label">
@@ -68,25 +117,6 @@
 					  		<show_in_website>1</show_in_website>
 					  		<show_in_store>1</show_in_store>
 				      	</order_status>
-						<account_email translate="label">
-							<label>PagSeguro Account E-mail</label>
-							<frontend_type>text</frontend_type>
-							<sort_order>4</sort_order>
-							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
-						</account_email>
-						<token translate="label, comment">
-							<label>Token</label>
-							<frontend_type>text</frontend_type>
-							<sort_order>5</sort_order>
-							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
-                            <comment>To activate automatic return from PagSeguro access your account and generate a token code and paste it here.</comment>
-						</token>
-                        
-                        
 						<custom_address_model translate="label, comment">
 						    <label>Custom Address Model</label>
 						    <frontend_type>select</frontend_type>
@@ -218,29 +248,6 @@
                             </depends>
                         </specificcountry>
                         
-                        <log_enable translate="label">
-						    <label>Enable Logging</label>
-						    <frontend_type>select</frontend_type>
-						    <source_model>adminhtml/system_config_source_enabledisable</source_model>
-						    <sort_order>56</sort_order>
-						    <show_in_default>1</show_in_default>
-						    <show_in_website>1</show_in_website>
-						    <show_in_store>1</show_in_store>
-						</log_enable>
-                        
-                        <log_types translate="label">
-						    <label>Log Types</label>
-						    <frontend_type>multiselect</frontend_type>
-						    <source_model>pagseguro/system_config_source_log_types</source_model>
-						    <sort_order>57</sort_order>
-						    <show_in_default>1</show_in_default>
-						    <show_in_website>1</show_in_website>
-						    <show_in_store>1</show_in_store>
-						    <depends>
-						    	<log_enable>1</log_enable>
-						    </depends>
-						</log_types>
-                        
 						<sort_order translate="label">
 						    <label>Sort Order</label>
 						    <frontend_type>text</frontend_type>
@@ -251,7 +258,7 @@
 						</sort_order>
                         
 			  	     </fields>
-                </pagseguro>
+                </pagseguro_hpp>
             </groups>
 		</payment>
 	</sections>

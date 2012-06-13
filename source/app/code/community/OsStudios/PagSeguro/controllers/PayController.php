@@ -16,6 +16,7 @@
  */
 
 /**
+ * 
  * PagSeguro Payment Controller
  *
  */
@@ -26,13 +27,14 @@ class OsStudios_PagSeguro_PayController extends Mage_Core_Controller_Front_Actio
     /**
      * Return PagSeguro Singleton Object
      *
-     * @return OsStudios_PagSeguro_Model_Payment
+     * @return OsStudios_PagSeguro_Model_Hpp
      */
     public function getPagSeguro()
     {
-        return Mage::getSingleton('pagseguro/payment');
+        return Mage::getSingleton('pagseguro/hpp');
     }
-
+    
+    
     /**
      * Return Checkout Object
      *
@@ -43,6 +45,7 @@ class OsStudios_PagSeguro_PayController extends Mage_Core_Controller_Front_Actio
         return Mage::getSingleton('checkout/session');
     }
     
+    
     /**
      * Return Order's Store ID
      * 
@@ -50,7 +53,8 @@ class OsStudios_PagSeguro_PayController extends Mage_Core_Controller_Front_Actio
     function getOrderStoreId($orderId) {
         return Mage::getModel('sales/order')->load($orderId)->getStoreId();
     }
-
+    
+    
     /**
      * Redirect Customer to PagSeguro Checkout Page
      *
@@ -123,6 +127,7 @@ class OsStudios_PagSeguro_PayController extends Mage_Core_Controller_Front_Actio
         }
     }
 
+    
     /**
      * Ação utilizada para duas finalidades:
      * - Redirecionar para a página de sucesso configurada, quando o comprador retorna à loja
@@ -155,7 +160,7 @@ class OsStudios_PagSeguro_PayController extends Mage_Core_Controller_Front_Actio
                     $url = $pagseguro->getConfigData('return_page', $storeId);
                     Mage::getSingleton("core/session")->setPagseguroOrderId(null);
                 } else {
-                    $url = $pagseguro->getCode() . '/pay/success';
+                    $url = 'pagseguro/pay/success';
                 }
             } else {
                 $url = '';
@@ -164,7 +169,8 @@ class OsStudios_PagSeguro_PayController extends Mage_Core_Controller_Front_Actio
             
         }
     }
-
+    
+    
     /**
      * Exibe informações de conclusão do pagamento
      * 

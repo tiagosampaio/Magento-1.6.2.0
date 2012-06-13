@@ -41,7 +41,7 @@ class OsStudios_PagSeguro_Block_Form extends Mage_Payment_Block_Form
      */
     public function getPagSeguro()
     {
-        return Mage::getSingleton('pagseguro/payment');
+        return Mage::getSingleton('pagseguro/hpp');
     }
     
     /**
