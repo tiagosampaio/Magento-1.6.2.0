@@ -15,21 +15,9 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-/**
- * PagSeguro Adminhtml Index Controller
- *
- */
-
-class OsStudios_PagSeguro_Adminhtml_IndexController extends Mage_Adminhtml_Controller_Action
+abstract class OsStudios_PagSeguro_Model_Returns_Abstract extends Mage_Core_Model_Abstract
 {
     
-	public function indexAction()
-	{
-		$this->loadLayout()
-			 ->renderLayout();
-			 
-		$returns = Mage::getModel('pagseguro/returns');
-		$returns->consultOrderStatusBetweenDates();
-	}
-    
+	
+	
 }
