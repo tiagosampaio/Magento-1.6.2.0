@@ -15,7 +15,7 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-class OsStudios_PagSeguro_Model_Returns_Transactions extends Mage_Core_Model_Abstract
+class OsStudios_PagSeguro_Model_Returns_Transactions extends OsStudios_PagSeguro_Model_Returns_Abstract
 {
     
 	/**

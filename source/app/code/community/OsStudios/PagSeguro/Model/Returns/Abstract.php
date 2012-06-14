@@ -18,6 +18,22 @@
 abstract class OsStudios_PagSeguro_Model_Returns_Abstract extends Mage_Core_Model_Abstract
 {
     
-	
-	
+    /**
+     * If result was seccessfully returned handle true
+     * @var boolean
+     */
+    protected $_success = false;
+    
+    public function wasSuccess()
+    {
+        return $this->_success;
+    }
+    
+    protected function setSuccess($bool = false)
+    {
+        $this->_success = $bool;
+        return $this;
+    }
+    
+    
 }

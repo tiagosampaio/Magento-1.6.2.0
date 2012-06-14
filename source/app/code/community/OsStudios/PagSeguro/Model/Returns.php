@@ -17,6 +17,12 @@
 
 class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
 {
+        
+       /**
+        * Handle the parameters used in consult
+        * @var (array)
+        */
+        protected $_params = array();
     
 	/**
 	 * 
@@ -39,9 +45,20 @@ class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
 	 */
 	public function setDateInitial($date = null)
 	{
-		$this->_initialDate = $date;
+            $this->_initialDate = $date;
+            return $this;
 	}
 	
+        /**
+         *
+         * Returns the initial date to consult in 'YYYY-MM-DDTHH:MM' format
+         * @return (string )
+         */
+        public function getDateInitial()
+        {
+            return $this->_initialDate;
+        }
+        
 	/**
 	 * 
 	 * Sets the ending date to consult transactions
@@ -49,9 +66,20 @@ class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
 	 */
 	public function setDateEnding($date = null)
 	{
-		$this->_endingDate = $date;
+            $this->_endingDate = $date;
+            return $this;
 	}
 	
+        /**
+         *
+         * Returns the ending date to consult in 'YYYY-MM-DDTHH:MM' format
+         * @return (string )
+         */
+        public function getDateEnding()
+        {
+            return $this->_endingDate;
+        }
+        
 	/**
 	 * 
 	 * Get transactions URL
@@ -87,16 +115,13 @@ class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
 	 * Consults and updates the order statuses with PagSeguro
 	 */
     public function consultOrderStatusBetweenDates()
-    {
-		
-		$params = array();
-		
-		$params['initialDate'] 		= '2012-06-08T00:00';
-		$params['finalDate'] 		= '2012-06-14T00:00';
-		$params['page'] 			= '1';
-		$params['maxPageResults'] 	= '100';
-		$params['email'] 			= 'thiko_38@hotmail.com';
-		$params['token'] 			= '35EA3CABB6F243059A87B8053FB4905D';
+    {	
+		$this->_params[] = array('initialDate' => '2012-06-08T00:00');
+		$this->_params[] = array('finalDate' => '2012-06-14T00:00');
+		$this->_params[] = array('page' => '1');
+		$this->_params[] = array('maxPageResults' => '100');
+		$this->_params[] = array('email' => 'thiko_38@hotmail.com');
+		$this->_params[] = array('token' => '35EA3CABB6F243059A87B8053FB4905D');
 		
 		$client = $this->getClient($params);
 		
