@@ -52,7 +52,8 @@ class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
         /**
          *
          * Returns the initial date to consult in 'YYYY-MM-DDTHH:MM' format
-         * @return (string )
+         * @return (string)
+         * @example 2012-06-08T00:00
          */
         public function getDateInitial()
         {
@@ -73,7 +74,8 @@ class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
         /**
          *
          * Returns the ending date to consult in 'YYYY-MM-DDTHH:MM' format
-         * @return (string )
+         * @return (string)
+         * @example 2012-06-08T00:00
          */
         public function getDateEnding()
         {
@@ -115,7 +117,14 @@ class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
 	 * Consults and updates the order statuses with PagSeguro
 	 */
     public function consultOrderStatusBetweenDates()
-    {	
+    {
+        
+        //$this->setDateInitial(Mage::getModel('core/date')->date('Y-m-d\TH:i', now()));
+        $this->setDateInitial(Mage::getModel('core/date')->date('Y-m-d\TH:i', Mage::getModel('core/date')->timestamp( now() )));
+        
+        
+        Mage::log( $this->getDateInitial(), null, 'DateInitial.log' );
+        
 		$this->_params[] = array('initialDate' => '2012-06-08T00:00');
 		$this->_params[] = array('finalDate' => '2012-06-14T00:00');
 		$this->_params[] = array('page' => '1');

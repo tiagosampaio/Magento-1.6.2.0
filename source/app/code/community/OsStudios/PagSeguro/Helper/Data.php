@@ -212,4 +212,9 @@ class OsStudios_PagSeguro_Helper_Data extends OsStudios_PagSeguro_Helper_Visie
         return array($ddd, $tel);
     }
     
+    public function formatDate($date)
+    {
+        
+    }
+    
 }
