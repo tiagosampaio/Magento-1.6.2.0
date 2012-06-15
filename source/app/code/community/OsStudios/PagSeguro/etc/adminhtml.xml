@@ -27,7 +27,7 @@
                     <children>
                     	<update_check translate="title" module="pagseguro">
                     		<title>Check for Order Updates</title>
-                    		<action>pagseguro/adminhtml_index/</action>
+                    		<action>pagseguro/adminhtml_returns/updates</action>
                     		<sort_order>0</sort_order>
                     	</update_check>
                     </children>

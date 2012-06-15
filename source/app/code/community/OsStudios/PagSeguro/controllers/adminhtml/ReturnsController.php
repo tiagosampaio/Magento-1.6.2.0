@@ -15,25 +15,22 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-abstract class OsStudios_PagSeguro_Model_Returns_Abstract extends OsStudios_PagSeguro_Model_Abstract
+/**
+ * PagSeguro Adminhtml Returns Controller
+ *
+ */
+
+class OsStudios_PagSeguro_Adminhtml_ReturnsController extends Mage_Adminhtml_Controller_Action
 {
     
-    /**
-     * If result was seccessfully returned handle true
-     * @var boolean
-     */
-    protected $_success = false;
-    
-    public function wasSuccess()
-    {
-        return $this->_success;
-    }
-    
-    protected function setSuccess($bool = false)
-    {
-        $this->_success = $bool;
-        return $this;
-    }
-    
+	public function updatesAction()
+	{
+		$this->loadLayout()
+			 ->renderLayout();
+			 
+		$returns = Mage::getModel('pagseguro/returns');
+		$returns->setReturnType(OsStudios_PagSeguro_Model_Returns::PAGSEGURO_RETURN_TYPE_CONSULT)
+				->runReturns();
+	}
     
 }

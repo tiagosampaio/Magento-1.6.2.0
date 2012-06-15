@@ -31,7 +31,7 @@ class OsStudios_PagSeguro_ReturnsController extends OsStudios_PagSeguro_Controll
      * 2) Receive and control the requests from the auto data returns from PagSeguro when update order statuses
      * 
      */
-    public function returnAction()
+    public function indexAction()
     {
         $pagseguro = $this->getPagSeguro();
         $request = $this->getRequest();

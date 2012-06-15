@@ -42,8 +42,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
     }
 	
     
-	/**
-     * 
+    /**
      * Registry any event/error log.
      * 
      * @return OsStudios_PagSeguro_Model_Payment
@@ -53,13 +52,15 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * @param string $file
      * @param bool $forceLog
      */
-    public function log($message, $level = null, $file = self::PAGSEGURO_LOG_FILENAME, $forceLog = false) {
-    	if(Mage::getStoreConfig('payment/pagseguro_config/log_enable', $this->getStore()))
-    	{
-            if( is_array($message) ) {
-                    Mage::log($message, $level, $file, $forceLog);
-            } else {
-                    Mage::log("PagSeguro: " . $message, $level, $file, $forceLog);
+    public function log($content, $level = null, $file = self::PAGSEGURO_LOG_FILENAME, $forceLog = false)
+    {
+    	if(Mage::getStoreConfig('payment/pagseguro_config/log_enable', $this->getStore())) {
+            if( !empty($content) ) {
+                if( is_array($content) || is_object($content)) {
+                        Mage::log($content, $level, $file, $forceLog);
+                } else {
+                        Mage::log("PagSeguro: " . $content, $level, $file, $forceLog);
+                }
             }
     	}
     	
@@ -68,8 +69,8 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
     
     
     /**
-     * 
      * Returns core date model from Magento
+     * 
      * @return Mage_Core_Model_Date
      */
     protected function getCoreDate()
@@ -82,7 +83,6 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
     
     
     /**
-     * 
      * Returns the Current Store
      * 
      * @return string
@@ -97,7 +97,6 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
     
     
     /**
-     * 
      * Returns the URL for payments on PagSeguro
      * 
      * @return string
@@ -114,7 +113,6 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
     
     
     /**
-     * 
      * Returns the Payment Notification URL of PagSeguro
      * 
      * @return string
@@ -130,7 +128,6 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
     
     
     /**
-     * 
      * Returns the URL to generate the billets of PagSeguro
      * 
      * @param string $transactionId = PagSeguro Transaction ID 
@@ -167,8 +164,8 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
     
 	
 	/**
-	 * 
 	 * Get Zend Http Client
+         * 
 	 * @param (array) $params
 	 * @param (Zend_Http_Client::GET or Zend_Http_Client::POST) $type
 	 * @return Zend_Http_Client
@@ -184,8 +181,8 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
 	
 	
 	/**
-	 * 
 	 * Returns credentials
+         * 
 	 * @return OsStudios_PagSeguro_Model_Credentials
 	 */
 	protected function getCredentials()
@@ -198,16 +195,38 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
 	
 	
 	/**
-	 * 
 	 * Extends translation functionality
+         * 
+         * @return (string)
 	 */
 	protected function __($string)
 	{
-		return Mage::helper('pagseguro')->__($string);
+            return Mage::helper('pagseguro')->__($string);
 	}
 	
 	protected function _redirect($path = '', $params = array())
 	{
-		Mage::app()->getResponse()->setRedirect(Mage::getUrl($path, $params));
+            Mage::app()->getResponse()->setRedirect(Mage::getUrl($path, $params));
 	}
+        
+        
+        /**
+         * Loads some order by order increment id as reference
+         * 
+         * @param (string) $incrementId
+         * @return Mage_Sales_Model_Order
+         */
+        protected function loadOrderByIncrementId($incrementId = null)
+        {
+            if($incrementId) {
+                $order = Mage::getModel('sales/order')->loadByIncrementId($incrementId);
+                
+                if($order->hasData())
+                {
+                    return $order;
+                }
+            }
+            return null;
+        }
+        
 }

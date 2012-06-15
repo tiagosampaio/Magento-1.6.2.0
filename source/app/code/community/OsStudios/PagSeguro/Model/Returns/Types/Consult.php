@@ -60,8 +60,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	public function setDateInitial($date = null)
 	{
-		$this->_initialDate = $date;
-        return $this;
+            $this->_initialDate = $date;
+            return $this;
 	}
 	
 	
@@ -132,7 +132,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	public function processReturn()
 	{
-        
+            
 		$this->_params['initialDate'] = '2012-06-08T00:00';
 		$this->_params['finalDate'] = $this->getDateEnding();
 		$this->_params['page'] = '1';
@@ -140,6 +140,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 		$this->_params['email'] = $this->getCredentials()->getAccountEmail();
 		$this->_params['token'] = $this->getCredentials()->getToken();
 		
+                $this->log( $this->getDateEnding() );
+                
 		$client = $this->getClient($this->_params);
 		
 		$request = $client->request();
@@ -157,29 +159,14 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 		
 		$return = $xml->getNode('transactions/transaction');
 		
-		$transactions = Mage::getModel('pagseguro/returns_transactions');
-		
+                
 		foreach( $return as $transaction )
 		{
-			$obj = new Varien_Object();
-			
-			$array = $transaction->asArray();
-			
-			$obj->setData($array);
-			
-			$type = $array['paymentMethod']['type'];
-			
-			$child = new Varien_Object();
-			$child->setType($type);
-			
-			$obj->setPaymentMethod($child);
-			
-			$data[] = $obj;
+                    
+                    $this->log($transaction);
+                    
+                    Mage::getModel('pagseguro/returns_types_transaction', $transaction->asArray())->processTransaction();
 		}
-		
-		$transactions->addData(array('transactions' => $data));
-		
-		Mage::log($transactions, null, 'transactions.log');
 		
 		$this->_response = self::PAGSEGURO_REUTRN_RESPONSE_AUTHORIZED;
 		$this->_success = true;

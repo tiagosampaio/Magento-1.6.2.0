@@ -27,21 +27,21 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
      * Default return from PagSeguro
      * @var (int)
      */
-	const PAGSEGURO_RETURN_DEFAULT = 1;
+	const PAGSEGURO_RETURN_TYPE_DEFAULT = 1;
 	
 	/**
      * 
      * Api return from PagSeguro
      * @var (int)
      */
-	const PAGSEGURO_RETURN_API = 2;
+	const PAGSEGURO_RETURN_TYPE_API = 2;
 	
 	/**
      * 
      * Request a consult in PagSeguro
      * @var (int)
      */
-	const PAGSEGURO_RETURN_CONSULT = 3;
+	const PAGSEGURO_RETURN_TYPE_CONSULT = 3;
 	
 	/**
 	 * 
@@ -90,7 +90,7 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	 * Sets the return type
 	 * @param unknown_type $type
 	 */
-	public function setReturnType($type = self::PAGSEGURO_RETURN_DEFAULT)
+	public function setReturnType($type = self::PAGSEGURO_RETURN_TYPE_DEFAULT)
 	{
 		$this->_returnType = $type;
 		return $this;
@@ -129,10 +129,10 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 		
 		switch ($type)
 		{
-			case self::PAGSEGURO_RETURN_API:
+			case self::PAGSEGURO_RETURN_TYPE_API:
 				break;
 				
-			case self::PAGSEGURO_RETURN_CONSULT:
+			case self::PAGSEGURO_RETURN_TYPE_CONSULT:
 				
 				$stop = false;
 				
@@ -154,7 +154,7 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 				
 				break;
 				
-			case self::PAGSEGURO_RETURN_DEFAULT:
+			case self::PAGSEGURO_RETURN_TYPE_DEFAULT:
 			default:
 				break;
 		}
