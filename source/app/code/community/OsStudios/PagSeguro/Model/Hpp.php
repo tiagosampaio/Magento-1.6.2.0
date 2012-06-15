@@ -15,16 +15,16 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-class OsStudios_PagSeguro_Model_Hpp extends OsStudios_PagSeguro_Model_Abstract
+class OsStudios_PagSeguro_Model_Hpp extends OsStudios_PagSeguro_Model_Payment
 {
     
-    protected $_code  					= 'pagseguro_hpp';
-    protected $_formBlockType 				= 'pagseguro/form';
-    protected $_infoBlockType 				= 'pagseguro/info';
+    protected $_code = 'pagseguro_hpp';
+    protected $_formBlockType = 'pagseguro/form';
+    protected $_infoBlockType = 'pagseguro/info';
     
-    protected $_canUseInternal 				= true;
-    protected $_canUseForMultishipping                  = false;
-    protected $_canCapture 				= true;
+    protected $_canUseInternal = true;
+    protected $_canUseForMultishipping = false;
+    protected $_canCapture = true;
     
     
     /**
@@ -115,7 +115,7 @@ class OsStudios_PagSeguro_Model_Hpp extends OsStudios_PagSeguro_Model_Abstract
     public function createRedirectForm()
     {
     	$form = new Varien_Data_Form();
-        $form->setAction($this->getPagSeguroUrl())
+        $form->setAction(Mage::getModel('pagseguro/data')->getPagSeguroUrl())
             ->setId('pagseguro_checkout')
             ->setName('pagseguro_checkout')
             ->setMethod('POST')
@@ -339,7 +339,7 @@ class OsStudios_PagSeguro_Model_Hpp extends OsStudios_PagSeguro_Model_Abstract
         
 		if (!empty($post)) {
             
-            $client = new Zend_Http_Client($this->getPagSeguroNPIUrl());
+            $client = new Zend_Http_Client(Mage::getModel('pagseguro/data')->getPagSeguroNPIUrl());
             
             if ($this->getConfigData('use_curl', $this->getOrder()->getStoreId())) {
                 $adapter = new Zend_Http_Client_Adapter_Curl();

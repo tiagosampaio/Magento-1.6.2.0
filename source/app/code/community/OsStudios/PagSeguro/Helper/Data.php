@@ -217,4 +217,39 @@ class OsStudios_PagSeguro_Helper_Data extends OsStudios_PagSeguro_Helper_Visie
         
     }
     
+    /**
+     * 
+     * Registry any event/error log.
+     * 
+     * @return OsStudios_PagSeguro_Helper_Data
+     * 
+     * @param string $message
+     */
+    public function log($message)
+    {
+    	Mage::getModel('pagseguro/data')->log($message);
+    	return $this;
+    }
+    
+    
+    /**
+     * 
+     * Checks if the content is an XML file
+     * @param (mixed) $content
+     * @return (bool)
+     */
+    public function isXml($content)
+    {
+    	libxml_use_internal_errors(true);
+    	$doc = new DOMDocument('1.0', 'utf-8');
+    	$doc->loadXML($content);
+    	
+    	$errors = libxml_get_errors(); 
+	    if (empty($errors)) 
+	    { 
+	        return true; 
+	    } 
+	    return false; 
+    }
+    
 }

@@ -15,136 +15,150 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-class OsStudios_PagSeguro_Model_Returns extends Mage_Core_Model_Abstract
+class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstract
 {
-        
-       /**
-        * Handle the parameters used in consult
-        * @var (array)
-        */
-        protected $_params = array();
-    
+	
+	const PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED = 'Unauthorized';
+	const PAGSEGURO_REUTRN_RESPONSE_AUTHORIZED = 'Authorized';
+	const PAGSEGURO_RETURN_RESPONSE_ERROR = 'Process Error';
+	
+    /**
+     * 
+     * Default return from PagSeguro
+     * @var (int)
+     */
+	const PAGSEGURO_RETURN_DEFAULT = 1;
+	
 	/**
-	 * 
-	 * Consult initial date
-	 * @var (datetime)
-	 */
-	protected $_initialDate = null;
+     * 
+     * Api return from PagSeguro
+     * @var (int)
+     */
+	const PAGSEGURO_RETURN_API = 2;
+	
+	/**
+     * 
+     * Request a consult in PagSeguro
+     * @var (int)
+     */
+	const PAGSEGURO_RETURN_CONSULT = 3;
 	
 	/**
 	 * 
-	 * Consult ending date
-	 * @var (datetime)
+	 * Handle the return type
+	 * @var (const)
 	 */
-	protected $_endingDate = null;
+	protected $_returnType = null;
 	
 	/**
 	 * 
-	 * Sets the initial date to consult transactions
-	 * @param (mixed) $date
+	 * Handle the post information
+	 * @var (mixed)
 	 */
-	public function setDateInitial($date = null)
+	protected $_post = null;
+	
+	/**
+	 * 
+	 * Handle the process result
+	 * @var (bool)
+	 */
+	protected $_success = false;
+	
+	/**
+	 * 
+	 * Handle the response result
+	 * @var (mixed)
+	 */
+	protected $_response = null;
+	
+	
+	/**
+	 * 
+	 * Sets the post data
+	 * @param (mixed) $post
+	 */
+	public function setPostData($post)
 	{
-            $this->_initialDate = $date;
-            return $this;
+		$this->_post = $post;
+		$this->setPost($this->_post);
+		return $this;
 	}
 	
-        /**
-         *
-         * Returns the initial date to consult in 'YYYY-MM-DDTHH:MM' format
-         * @return (string)
-         * @example 2012-06-08T00:00
-         */
-        public function getDateInitial()
-        {
-            return $this->_initialDate;
-        }
-        
-	/**
-	 * 
-	 * Sets the ending date to consult transactions
-	 * @param (mixed) $date
-	 */
-	public function setDateEnding($date = null)
-	{
-            $this->_endingDate = $date;
-            return $this;
-	}
-	
-        /**
-         *
-         * Returns the ending date to consult in 'YYYY-MM-DDTHH:MM' format
-         * @return (string)
-         * @example 2012-06-08T00:00
-         */
-        public function getDateEnding()
-        {
-            return $this->_endingDate;
-        }
-        
-	/**
-	 * 
-	 * Get transactions URL
-	 * @return (string)
-	 */
-	protected function getTransactionsUrl()
-	{
-		$url = Mage::getStoreConfig('payment/pagseguro_config/pagseguro_transactions_url', Mage::app()->getStore());
-		if(!$url) {
-			Mage::throwException(Mage::helper('pagseguro')->__('Unable to retrieve transactions URL from module configuration.'));
-		}
-		return $url;
-	}
 	
 	/**
 	 * 
-	 * Get Zend Http Client
-	 * @param (array) $params
-	 * @param (Zend_Http_Client::GET or Zend_Http_Client::POST) $type
-	 * @return Zend_Http_Client
+	 * Sets the return type
+	 * @param unknown_type $type
 	 */
-	protected function getClient($params = array(), $type = Zend_Http_Client::GET)
+	public function setReturnType($type = self::PAGSEGURO_RETURN_DEFAULT)
 	{
-		$client = new Zend_Http_Client($this->getTransactionsUrl());
-		$client->setMethod(Zend_Http_Client::GET)
-			   ->setParameterGet($params);
-			   
-		return $client;
+		$this->_returnType = $type;
+		return $this;
 	}
+	
 	
 	/**
 	 * 
-	 * Consults and updates the order statuses with PagSeguro
+	 * Return true if the returned has processed
+	 * @return (bool)
 	 */
-    public function consultOrderStatusBetweenDates()
-    {
-        
-        //$this->setDateInitial(Mage::getModel('core/date')->date('Y-m-d\TH:i', now()));
-        $this->setDateInitial(Mage::getModel('core/date')->date('Y-m-d\TH:i', Mage::getModel('core/date')->timestamp( now() )));
-        
-        
-        Mage::log( $this->getDateInitial(), null, 'DateInitial.log' );
-        
-		$this->_params[] = array('initialDate' => '2012-06-08T00:00');
-		$this->_params[] = array('finalDate' => '2012-06-14T00:00');
-		$this->_params[] = array('page' => '1');
-		$this->_params[] = array('maxPageResults' => '100');
-		$this->_params[] = array('email' => 'thiko_38@hotmail.com');
-		$this->_params[] = array('token' => '35EA3CABB6F243059A87B8053FB4905D');
+	public function isSuccess()
+	{
+		return $this->_success;
+	}
+	
+	
+	/**
+	 * 
+	 * Return response of the return
+	 * @return (bool)
+	 */
+	public function getResponse()
+	{
+		return $this->_response;
+	}
+	
+	
+	/**
+	 * 
+	 * Identifies and process the correct return
+	 */
+	public function runReturns()
+	{
+		$type = $this->_returnType;
 		
-		$client = $this->getClient($params);
-		
-		$answer = $client->request();
-		$body = $answer->getBody();
-		
-		$xml = new Varien_Simplexml_Config($body);
-		$transactions = $xml->getNode('transactions/transaction');
-		
-		foreach( $transactions as $transaction )
+		switch ($type)
 		{
-			Mage::log($transaction, null, 'transactions.log');
-		}	
-    	
-    }
-    
+			case self::PAGSEGURO_RETURN_API:
+				break;
+				
+			case self::PAGSEGURO_RETURN_CONSULT:
+				
+				$stop = false;
+				
+				$this->_response = Mage::getModel('pagseguro/returns_types_consult')->processReturn()->getResponse();
+				if($this->_response == self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED)
+				{
+					$errMsg = $this->__('The consult was unauthorized by PagSeguro.');
+					$stop = true;
+				} elseif ($this->_response == self::PAGSEGURO_RETURN_RESPONSE_ERROR) {
+					$errMsg = $this->__('PagSeguro has returned an error.');
+					$stop = true;
+				}
+				
+				if(Mage::getSingleton('admin/session') && $stop) {
+					Mage::getSingleton('adminhtml/session')->addError($errMsg);
+					$this->_redirect('pagseguro/adminhtml_index/index');
+					return;
+				}
+				
+				break;
+				
+			case self::PAGSEGURO_RETURN_DEFAULT:
+			default:
+				break;
+		}
+		
+	}
+	
 }

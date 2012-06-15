@@ -29,7 +29,8 @@ class OsStudios_PagSeguro_Adminhtml_IndexController extends Mage_Adminhtml_Contr
 			 ->renderLayout();
 			 
 		$returns = Mage::getModel('pagseguro/returns');
-		$returns->consultOrderStatusBetweenDates();
+		$returns->setReturnType(OsStudios_PagSeguro_Model_Returns::PAGSEGURO_RETURN_CONSULT)
+				->runReturns();
 	}
     
 }

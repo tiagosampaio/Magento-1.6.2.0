@@ -15,52 +15,34 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Payment_Model_Method_Abstract
+abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstract
 {
-    
-    protected $_order 				= null;
-    
-    const PAGSEGURO_LOG_FILENAME		= 'osstudios_pagseguro.log';
-    
-    const PAGSEGURO_STATUS_COMPLETE		= 'Completo';
-    const PAGSEGURO_STATUS_WAITING_PAYMENT	= 'Aguardando Pagto';
-    const PAGSEGURO_STATUS_APPROVED		= 'Aprovado';
-    const PAGSEGURO_STATUS_ANALYSING		= 'Em Análise';
-    const PAGSEGURO_STATUS_CANCELED		= 'Cancelado';
-    const PAGSEGURO_STATUS_RETURNED		= 'Devolvido';
-    
-    
-    /**
-     *  Return Order
+   
+	const PAGSEGURO_DATE_FORMAT = 'Y-m-d\TH:i';
+	const PAGSEGURO_LOG_FILENAME = 'osstudios_pagseguro.log';
+	
+	protected $_configPrefix = 'payment/pagseguro_config/';
+	protected $_credentials = null;
+	protected $_store = null;
+	protected $_coreDate = null;
+	
+	/**
+     * Retrieve information from PagSeguro configuration
      *
-     *  @return	  Mage_Sales_Model_Order
+     * @param   string $field
+     * @return  mixed
      */
-    public function getOrder()
+    public function getConfigData($field, $storeId = null)
     {
-        if ($this->_order == null) {
-        	return false;
+        if (null === $storeId) {
+            $storeId = $this->getStore();
         }
-        return $this->_order;
+        $path = $this->_configPrefix.$field;
+        return Mage::getStoreConfig($path, $storeId);
     }
 	
     
-    /**
-     * 
-     *  Set Current Order
-     *
-     *  @param Mage_Sales_Model_Order $order
-     */
-    public function setOrder(Mage_Sales_Model_Order $order)
-    {
-    	if(!$this->_order)
-    	{
-    		$this->_order = $order;
-    	}
-        return $this;
-    }
-    
-	
-    /**
+	/**
      * 
      * Registry any event/error log.
      * 
@@ -87,19 +69,30 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Payment_Model_Met
     
     /**
      * 
+     * Returns core date model from Magento
+     * @return Mage_Core_Model_Date
+     */
+    protected function getCoreDate()
+    {
+    	if(!$this->_coreDate) {
+    		$this->_coreDate = Mage::getModel('core/date');
+    	}
+    	return $this->_coreDate;
+    }
+    
+    
+    /**
+     * 
      * Returns the Current Store
      * 
      * @return string
      */
     public function getStore()
     {
-    	if($this->getOrder()) {
-    		$store = $this->getOrder()->getStore();
-    	} else {
-    		$store = Mage::app()->getStore();
+    	if(!$this->_store) {
+    		$this->_store = Mage::app()->getStore(); 
     	}
-    	
-    	return $store;
+    	return $this->_store;
     }
     
     
@@ -111,7 +104,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Payment_Model_Met
      */ 
     public function getPagSeguroUrl()
     {
-        $url = Mage::getStoreConfig('payment/pagseguro_config/pagseguro_url', $this->getStore());
+        $url = $this->getConfigData('pagseguro_url');
     	if(!$url) {
     		Mage::throwException( Mage::helper('pagseguro')->__('The PagSeguro URL could not be retrieved.') );
     	}
@@ -128,7 +121,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Payment_Model_Met
      */ 
     public function getPagSeguroNPIUrl()
     {
-        $url = Mage::getStoreConfig('payment/pagseguro_config/pagseguro_npi_url', $this->getStore());
+        $url = $this->getConfigData('pagseguro_npi_url');
     	if(!$url) {
     		Mage::throwException( Mage::helper('pagseguro')->__('The PagSeguro NPI URL could not be retrieved.') );
     	}
@@ -137,17 +130,15 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Payment_Model_Met
     
     
     /**
-     * getPagSeguroBoletoUrl
      * 
      * Returns the URL to generate the billets of PagSeguro
      * 
-     * @param string $transactionId = PagSeguro Transaction ID
-     * 
-     * @return string
+     * @param string $transactionId = PagSeguro Transaction ID 
+     * @return (string)
      */ 
     public function getPagSeguroBoletoUrl($transactionId, $escapeHtml = true)
     {
-        $url = Mage::getStoreConfig('payment/pagseguro_config/pagseguro_billet_url', $this->getStore());
+        $url = $this->getConfigData('pagseguro_billet_url');
     	if(!$url) {
     		Mage::throwException( Mage::helper('pagseguro')->__('The PagSeguro Billet URL could not be retrieved.') );
     	}
@@ -159,4 +150,64 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Payment_Model_Met
         return $url;
     }
     
+    
+	/**
+	 * 
+	 * Returns transactions URL
+	 * @return (string)
+	 */
+	protected function getTransactionsUrl()
+	{
+		$url = $this->getConfigData('pagseguro_transactions_url');
+		if(!$url) {
+			Mage::throwException(Mage::helper('pagseguro')->__('Unable to retrieve transactions URL from module configuration.'));
+		}
+		return $url;
+	}
+    
+	
+	/**
+	 * 
+	 * Get Zend Http Client
+	 * @param (array) $params
+	 * @param (Zend_Http_Client::GET or Zend_Http_Client::POST) $type
+	 * @return Zend_Http_Client
+	 */
+	protected function getClient($params = array(), $type = Zend_Http_Client::GET)
+	{
+		$client = new Zend_Http_Client($this->getTransactionsUrl());
+		$client->setMethod(Zend_Http_Client::GET)
+			   ->setParameterGet($params);
+			   
+		return $client;
+	}
+	
+	
+	/**
+	 * 
+	 * Returns credentials
+	 * @return OsStudios_PagSeguro_Model_Credentials
+	 */
+	protected function getCredentials()
+	{
+		if(!$this->_credentials) {
+			$this->_credentials = Mage::getModel('pagseguro/credentials');
+		}
+		return $this->_credentials;
+	}
+	
+	
+	/**
+	 * 
+	 * Extends translation functionality
+	 */
+	protected function __($string)
+	{
+		return Mage::helper('pagseguro')->__($string);
+	}
+	
+	protected function _redirect($path = '', $params = array())
+	{
+		Mage::app()->getResponse()->setRedirect(Mage::getUrl($path, $params));
+	}
 }
