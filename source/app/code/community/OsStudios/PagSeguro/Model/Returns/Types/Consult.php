@@ -15,7 +15,7 @@
  * @author     Tiago Sampaio <tiago.sampaio@osstudios.com.br>
  */
 
-class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSeguro_Model_Returns
+class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSeguro_Model_Returns_Types_Abstract
 {
 	
 	/**
@@ -132,17 +132,17 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	public function processReturn()
 	{
-            
+        
 		$this->_params['initialDate'] = '2012-06-08T00:00';
 		$this->_params['finalDate'] = $this->getDateEnding();
 		$this->_params['page'] = '1';
 		$this->_params['maxPageResults'] = '100';
 		$this->_params['email'] = $this->getCredentials()->getAccountEmail();
 		$this->_params['token'] = $this->getCredentials()->getToken();
-		
-                $this->log( $this->getDateEnding() );
                 
-		$client = $this->getClient($this->_params);
+		$client = new Zend_Http_Client($this->getPagSeguroTransactionsUrl());
+		$client->setMethod(Zend_Http_Client::GET)
+			   ->setParameterGet($this->_params);
 		
 		$request = $client->request();
 		$body = $request->getBody();
@@ -162,10 +162,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
                 
 		foreach( $return as $transaction )
 		{
-                    
-                    //$this->log($transaction);
-                    
-                    Mage::getModel('pagseguro/returns_types_transaction', $transaction->asArray())->processTransaction();
+			Mage::getModel('pagseguro/returns_types_transactions_transaction', $transaction->asArray(), self::PAGSEGURO_RETURN_TYPE_CONSULT)->processTransaction();
 		}
 		
 		$this->_response = self::PAGSEGURO_REUTRN_RESPONSE_AUTHORIZED;

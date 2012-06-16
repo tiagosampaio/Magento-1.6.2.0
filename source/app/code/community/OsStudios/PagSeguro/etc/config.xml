@@ -126,6 +126,7 @@
                  <pagseguro_transactions_url>https://ws.pagseguro.uol.com.br/v2/transactions</pagseguro_transactions_url>
                  <log_enable>1</log_enable>
                  <log_types>begend_tags,return_data,confimation_status,order_status,log_separator</log_types>
+                 <use_curl>1</use_curl>
              </pagseguro_config>
              <pagseguro_hpp>
                  <model>OsStudios_PagSeguro_Model_Hpp</model>
@@ -140,7 +141,6 @@
                  <price_grouping>0</price_grouping>
                  <shipping_price>separated</shipping_price>
                  <use_return_page_cms>0</use_return_page_cms>
-                 <use_curl>1</use_curl>        
                  <allowspecific>0</allowspecific>
             </pagseguro_hpp>
         </payment>

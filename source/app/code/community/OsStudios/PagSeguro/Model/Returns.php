@@ -119,6 +119,54 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	}
 	
 	
+	protected function _validate()
+	{
+		$post = $this->getPost();
+		
+		if( !empty($post)) {
+			
+			$credentials = Mage::getModel('pagseguro/credentials');
+					
+			$post['encoding'] = 'utf-8';
+			$post['Comando'] = 'validar';
+			$post['Token'] = $credentials->getToken();
+			
+			$client = new Zend_Http_Client($this->getPagSeguroNPIUrl());
+			
+			if( $this->getConfigData('use_curl') ) {
+				$adapter = new Zend_Http_Client_Adapter_Curl();
+				
+				$config = array('timeout' => 30,
+								'curloptions' => array(
+									CURLOPT_SSL_VERIFYPEER => false
+								));
+				$adapter->setConfig($config);
+				
+				$client->setAdapter($adapter);
+			}
+			
+			try {
+				
+				$client->setMethod(Zend_Http_Client::POST)
+					   ->setParameterPost($post);
+				
+				$content = $client->request();
+				$return = $content->getBody();
+				
+				$this->log($return);
+				
+			} catch (Mage_Core_Exception $e) {
+				$this->log($e->getMessage());
+			} catch (Exception $e) {
+				$this->log($e->getMessage());
+			}
+			
+			$result = (strcmp($return, 'VERIFICADO') == 0);
+		}
+		return $result;
+	}
+	
+	
 	/**
 	 * 
 	 * Identifies and process the correct return
@@ -126,36 +174,63 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	public function runReturns()
 	{
 		$type = $this->_returnType;
+		$post = $this->getPost();
 		
 		switch ($type)
 		{
+			/**
+			 * Returns from PagSeguro API
+			 */
 			case self::PAGSEGURO_RETURN_TYPE_API:
-				break;
 				
+				$model = Mage::getModel('pagseguro/returns_types_api');
+				
+				
+				break;
+			
+			/**
+			 *  Self consulting 
+			 */
 			case self::PAGSEGURO_RETURN_TYPE_CONSULT:
 				
 				$stop = false;
 				
-				$this->_response = Mage::getModel('pagseguro/returns_types_consult')->processReturn()->getResponse();
-				if($this->_response == self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED)
-				{
-					$errMsg = $this->__('The consult was unauthorized by PagSeguro.');
+				$model = Mage::getModel('pagseguro/returns_types_consult');
+				
+				$this->_response = $model->processReturn()->getResponse();
+				if($this->_response == self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED) {
+					$errMsg = $this->__('The consult was not authorized by PagSeguro.');
 					$stop = true;
 				} elseif ($this->_response == self::PAGSEGURO_RETURN_RESPONSE_ERROR) {
 					$errMsg = $this->__('PagSeguro has returned an error.');
 					$stop = true;
 				}
 				
-				if(Mage::getSingleton('admin/session') && $stop) {
+				if(Mage::getSingleton('admin/session') && $stop) {					
 					Mage::getSingleton('adminhtml/session')->addError($errMsg);
-					$this->_redirect('pagseguro/adminhtml_index/index');
-					return;
+					return $this;
 				}
+				
+				$this->_success = true;
+				return $this;
 				
 				break;
 				
+			/**
+			 * Automatic return from PagSeguro
+			 */
 			case self::PAGSEGURO_RETURN_TYPE_DEFAULT:
 			default:
+				
+				if($this->_validate()) {
+					$model = Mage::getModel('pagseguro/returns_types_default');
+					
+					
+				}
+				
+				$this->_success = true;
+				return $this;
+				
 				break;
 		}
 		

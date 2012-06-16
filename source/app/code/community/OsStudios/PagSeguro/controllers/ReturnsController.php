@@ -36,15 +36,29 @@ class OsStudios_PagSeguro_ReturnsController extends OsStudios_PagSeguro_Controll
         $pagseguro = $this->getPagSeguro();
         $request = $this->getRequest();
         
-        if ($request->isPost()) {
+        if (($post = $request->getPost()) && $request->isPost()) {
         	
-            $post = $request->getPost();
+        	$returns = Mage::getModel('pagseguro/returns');
+        	$data = Mage::getModel('pagseguro/data');
         	
-            // That is a $_POST. Process Automatic Return.
-            $pagseguro->setPostData($request)
-                      ->setOrder(Mage::getModel('sales/order')->loadByIncrementId($post['Referencia']))
-                      ->processReturn();
-            
+        	if($data->isReturnApi($post))
+        	{
+        		$returns->setReturnType(OsStudios_PagSeguro_Model_Returns::PAGSEGURO_RETURN_TYPE_API);
+        	} elseif ($data->isReturnDefault($post)) {
+        		$returns->setReturnType(OsStudios_PagSeguro_Model_Returns::PAGSEGURO_RETURN_TYPE_DEFAULT);
+        	} else {
+        		/**
+        		 * None of allowed post types was sent
+        		 */
+        		return false;
+        	}
+        	
+        	/**
+        	 * Process returns according to type
+        	 */
+        	$returns->setPostData($post)
+        			->runReturns();
+        			
         } else {
         	
             // That is a $_GET. Redirect to set page.

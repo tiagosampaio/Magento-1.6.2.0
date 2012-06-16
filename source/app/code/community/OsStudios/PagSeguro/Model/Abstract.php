@@ -32,7 +32,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * @param   string $field
      * @return  mixed
      */
-    public function getConfigData($field, $storeId = null)
+    protected function getConfigData($field, $storeId = null)
     {
         if (null === $storeId) {
             $storeId = $this->getStore();
@@ -101,7 +101,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * 
      * @return string
      */ 
-    public function getPagSeguroUrl()
+    protected function getPagSeguroUrl()
     {
         $url = $this->getConfigData('pagseguro_url');
     	if(!$url) {
@@ -117,7 +117,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * 
      * @return string
      */ 
-    public function getPagSeguroNPIUrl()
+    protected function getPagSeguroNPIUrl()
     {
         $url = $this->getConfigData('pagseguro_npi_url');
     	if(!$url) {
@@ -133,7 +133,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * @param string $transactionId = PagSeguro Transaction ID 
      * @return (string)
      */ 
-    public function getPagSeguroBoletoUrl($transactionId, $escapeHtml = true)
+    protected function getPagSeguroBoletoUrl($transactionId, $escapeHtml = true)
     {
         $url = $this->getConfigData('pagseguro_billet_url');
     	if(!$url) {
@@ -153,7 +153,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
 	 * Returns transactions URL
 	 * @return (string)
 	 */
-	protected function getTransactionsUrl()
+	protected function getPagSeguroTransactionsUrl()
 	{
 		$url = $this->getConfigData('pagseguro_transactions_url');
 		if(!$url) {
@@ -162,23 +162,6 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
 		return $url;
 	}
     
-	
-	/**
-	 * Get Zend Http Client
-         * 
-	 * @param (array) $params
-	 * @param (Zend_Http_Client::GET or Zend_Http_Client::POST) $type
-	 * @return Zend_Http_Client
-	 */
-	protected function getClient($params = array(), $type = Zend_Http_Client::GET)
-	{
-		$client = new Zend_Http_Client($this->getTransactionsUrl());
-		$client->setMethod(Zend_Http_Client::GET)
-			   ->setParameterGet($params);
-			   
-		return $client;
-	}
-	
 	
 	/**
 	 * Returns credentials
