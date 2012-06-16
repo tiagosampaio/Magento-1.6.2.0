@@ -163,7 +163,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 		foreach( $return as $transaction )
 		{
                     
-                    $this->log($transaction);
+                    //$this->log($transaction);
                     
                     Mage::getModel('pagseguro/returns_types_transaction', $transaction->asArray())->processTransaction();
 		}

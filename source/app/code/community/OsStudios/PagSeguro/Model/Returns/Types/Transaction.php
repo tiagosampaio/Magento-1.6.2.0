@@ -127,16 +127,12 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transaction extends OsStudios_PagS
         
         if(isset($transaction['notificationCode']) && isset($transaction['notificationType']))
         {
-            
             $this->_transactionType = self::PAGSEGURO_RETURN_TYPE_API;
-            
         } elseif( isset($transaction['date'])       && isset($transaction['reference'])     && isset($transaction['code'])          && isset($transaction['type']) && 
                   isset($transaction['status'])     && isset($transaction['paymentMethod']) && isset($transaction['grossAmount'])   && isset($transaction['discountAmount']) && 
                   isset($transaction['feeAmount'])  && isset($transaction['netAmount'])     && isset($transaction['extraAmount'])   && isset($transaction['lastEventDate']))
         {
-            
             $this->_transactionType = self::PAGSEGURO_RETURN_TYPE_CONSULT;
-            
         }
         
         switch ($this->_transactionType) {
@@ -149,6 +145,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transaction extends OsStudios_PagS
                      ->setCode($transaction['code'])
                      ->setType($transaction['type'])
                      ->setStatus($transaction['status'])
+                     //->setStatus( self::STATUS_PAID )
                      ->setGrossAmount($transaction['grossAmount'])
                      ->setDiscountAmount($transaction['discountAmount'])
                      ->setFeeAmount($transaction['feeAmount'])
@@ -193,6 +190,11 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transaction extends OsStudios_PagS
         $order = $this->loadOrderByIncrementId($this->getReference());
         
         if($order instanceof Mage_Sales_Model_Order) {
+        	
+        	$order->getPayment()->setPagseguroTransactionId($this->getCode())
+		    					->setPagseguroPaymentMethod($this->getPaymentMethodType())
+		    					->save();
+        	
             switch ($this->getStatus()) {
                 case self::STATUS_PAID:
                 case self::STATUS_AVAILABLE:
@@ -205,13 +207,13 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transaction extends OsStudios_PagS
                         
                         $state = Mage_Sales_Model_Order::STATE_PROCESSING;
                         $status = Mage_Sales_Model_Order::STATE_PROCESSING;
-                        $comment = $this->__('Payment confirmed by PagSeguro (%s). PagSeguro Transaction: %s.', $this->getPaymentMethodType(), $this->getCode()) ;
+                        $comment = Mage::helper('pagseguro')->__('Payment confirmed by PagSeguro (%s). PagSeguro Transaction: %s.', $this->getPaymentMethodType(), $this->getCode()) ;
                         $notify = true;
                         $visibleOnFront = true;
                         
                         $invoice = $order->prepareInvoice();
                         $invoice->register()->pay();
-                        $invoice->addComment($comment, $notify, $visibleOnFront);
+                        $invoice->addComment($comment, $notify, $visibleOnFront)->save();
                         $invoice->sendUpdateEmail($visibleOnFront, $comment);
                         $invoice->setEmailSent(true);
                         
@@ -219,11 +221,13 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transaction extends OsStudios_PagS
                                                                    ->addObject($invoice->getOrder())
                                                                    ->save();
                         
-                        $comment = $this->__('Invoice #%s was created.', $invoice->getIncrementId());
-                        $order->setState($state, $status, $comment, true);
+                        $comment = Mage::helper('pagseguro')->__('Invoice #%s was created.', $invoice->getIncrementId());
+                        $order->setState($state, $status, $comment, true)->save();
+                        
+                        $this->log($order->getRealOrderId(), null, 'orders.log');
                         
                     }
-
+					
                     break;
                 case self::STATUS_CANCELED:
                 case self::STATUS_RETURNED:
@@ -242,14 +246,17 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transaction extends OsStudios_PagS
                         $order->setState($state, $status, $comment, true)->save();
                         $order->cancel();
                     }
-
+					
                     break;
+                case self::STATUS_WAITING_PAYMENT:
+                case self::STATUS_ANALYSIS:
+                case self::STATUS_IN_DISPUTE:
                 default:
                     if($order->canHold()) {
                         $order->hold();
                     }
                     break;
-            }            
+            }
         }
     }
 }
