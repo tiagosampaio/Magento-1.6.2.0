@@ -20,42 +20,43 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	
 	/**
      * Handle the parameters used in consult
+     * 
      * @var (array)
      */
     protected $_params = array();
 	
     /**
-	 * 
 	 * Consult initial date
+	 * 
 	 * @var (datetime)
 	 */
 	protected $_initialDate = null;
 	
 	/**
-	 * 
 	 * Consult ending date
+	 * 
 	 * @var (datetime)
 	 */
 	protected $_endingDate = null;
     
 	/**
-	 * 
 	 * Handle the process result
+	 * 
 	 * @var (bool)
 	 */
 	protected $_success = false;
 	
 	/**
-	 * 
 	 * Handle the response result
+	 * 
 	 * @var (mixed)
 	 */
 	protected $_response = null;
 	
 	
 	/**
-	 * 
 	 * Sets the initial date to consult transactions
+	 * 
 	 * @param (mixed) $date
 	 */
 	public function setDateInitial($date = null)
@@ -66,8 +67,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	
 	
 	/**
-     *
      * Returns the initial date to consult in 'YYYY-MM-DDTHH:MM' format
+     * 
      * @return (string)
      * @example 2012-06-08T00:00
      */
@@ -78,8 +79,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
         
      
 	/**
-	 * 
 	 * Sets the ending date to consult transactions
+	 * 
 	 * @param (mixed) $date
 	 */
 	public function setDateEnding($date = null)
@@ -90,8 +91,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	
 	
 	/**
-     *
      * Returns the ending date to consult in 'YYYY-MM-DDTHH:MM' format
+     * 
      * @return (string)
      * @example 2012-06-08T00:00
      */
@@ -105,8 +106,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	
     
 	/**
-	 * 
 	 * Return true if the returned has processed
+	 * 
 	 * @return (bool)
 	 */
 	public function isSuccess()
@@ -116,8 +117,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	
 	
 	/**
-	 * 
 	 * Return response of the return
+	 * 
 	 * @return (bool)
 	 */
 	public function getResponse()
@@ -127,8 +128,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
     
     
     /**
-	 * 
 	 * Consults and updates the order statuses with PagSeguro
+	 * 
+	 * @return OsStudios_PagSeguro_Model_Returns_Types_Consult
 	 */
 	public function processReturn()
 	{

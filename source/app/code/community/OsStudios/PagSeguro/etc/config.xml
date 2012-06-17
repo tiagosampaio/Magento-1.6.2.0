@@ -145,4 +145,16 @@
             </pagseguro_hpp>
         </payment>
     </default>
+    <crontab>
+    	<jobs>
+    		<pagseguro_orders_consult_states>
+    			<schedule>
+    				<cron_expr>*/15 * * * *</cron_expr>
+    			</schedule>
+    			<run>
+    				<model>pagseguro/observer::cronConsultOrderStates</model>
+    			</run>
+    		</pagseguro_orders_consult_states>
+    	</jobs>
+    </crontab>
 </config>

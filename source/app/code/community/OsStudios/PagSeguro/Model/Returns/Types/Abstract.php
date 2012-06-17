@@ -19,22 +19,23 @@ abstract class OsStudios_PagSeguro_Model_Returns_Types_Abstract extends OsStudio
 {
 	
 	/**
-	 * 
 	 * Handle the process result
+	 * 
 	 * @var (bool)
 	 */
 	protected $_success = false;
 	
 	/**
-	 * 
 	 * Handle the response result
+	 * 
 	 * @var (mixed)
 	 */
 	protected $_response = null;
 	
+	
 	/**
-	 * 
 	 * Return true if the returned has processed
+	 * 
 	 * @return (bool)
 	 */
 	public function isSuccess()
@@ -44,8 +45,8 @@ abstract class OsStudios_PagSeguro_Model_Returns_Types_Abstract extends OsStudio
 	
 	
 	/**
-	 * 
 	 * Return response of the return
+	 * 
 	 * @return (bool)
 	 */
 	public function getResponse()
@@ -54,9 +55,10 @@ abstract class OsStudios_PagSeguro_Model_Returns_Types_Abstract extends OsStudio
 	}
     
     
-    /**
-	 * 
+    /** 
 	 * Process return
+	 * 
+	 * @return OsStudios_PagSeguro_Model_Returns_Types_Abstract
 	 */
 	public function processReturn()
 	{

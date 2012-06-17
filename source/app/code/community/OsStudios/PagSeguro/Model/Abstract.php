@@ -25,6 +25,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
 	protected $_credentials = null;
 	protected $_store = null;
 	protected $_coreDate = null;
+	protected $_allowedLogTypes = array();
 	
 	/**
      * Retrieve information from PagSeguro configuration
@@ -211,5 +212,27 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
             }
             return null;
         }
+	
+        
+	/**
+	 * Check if some log is allowed
+	 * 
+	 * @param unknown_type $type
+	 */
+	protected function isLogTypeAllowed($type = null)
+	{
+		if(!$this->_allowedLogTypes)
+		{
+			$data = $this->getConfigData('log_types');
+			$data = explode(',', $data);
+			$this->_allowedLogTypes = $data;
+		}
+		
+		if($this->_allowedLogTypes) {
+			return in_array($type, $this->_allowedLogTypes);
+		} else {
+			return null;
+		}
+	}
         
 }

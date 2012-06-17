@@ -18,23 +18,38 @@
 class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSeguro_Model_Returns_Types_Abstract
 {
 	
+	protected $_post = null;
+	
 	/**
-	 * 
 	 * Handle the process result
+	 * 
 	 * @var (bool)
 	 */
 	protected $_success = false;
 	
 	/**
-	 * 
 	 * Handle the response result
+	 * 
 	 * @var (mixed)
 	 */
 	protected $_response = null;
 	
+	
 	/**
+	 * Sets the post data
 	 * 
+	 * @param (mixed) $post
+	 */
+	public function setPostData($post)
+	{
+		$this->_post = $post;
+		$this->setPost($this->_post);
+		return $this;
+	}
+	
+	/**
 	 * Return true if the returned has processed
+	 * 
 	 * @return (bool)
 	 */
 	public function isSuccess()
@@ -44,8 +59,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
 	
 	
 	/**
-	 * 
 	 * Return response of the return
+	 * 
 	 * @return (bool)
 	 */
 	public function getResponse()
@@ -55,8 +70,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
     
     
     /**
-	 * 
 	 * Process return
+	 * 
+	 * @return OsStudios_PagSeguro_Model_Returns_Types_Default
 	 */
 	public function processReturn()
 	{

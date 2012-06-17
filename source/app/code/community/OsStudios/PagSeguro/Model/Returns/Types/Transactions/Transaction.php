@@ -122,9 +122,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
         return $this;
     }
     
+    
     public function __construct($transaction = array(), $transactionType = self::PAGSEGURO_RETURN_TYPE_DEFAULT)
     {
-        
     	$this->setTransactionType($transactionType);
     	
         switch ($this->_transactionType) {
@@ -177,6 +177,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
         return $this;
     }
     
+    /**
+     * Process the current transaction
+     */
     public function processTransaction()
     {
         $order = $this->loadOrderByIncrementId($this->getReference());
@@ -187,68 +190,42 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
 		    					->setPagseguroPaymentMethod($this->getPaymentMethodType())
 		    					->save();
         	
+			$ordersModel = Mage::getModel('pagseguro/returns_orders');
+			$ordersModel->setOrder($order);
+		    					
             switch ($this->getStatus()) {
                 case self::STATUS_PAID:
                 case self::STATUS_AVAILABLE:
                     
-                    if($order->canUnhold()) {
-                        $order->unhold();
+                    $result = $ordersModel->processOrderApproved()->getResponse();
+                    if($result === OsStudios_PagSeguro_Model_Returns_Orders::ORDER_NOTPROCESSED) {
+                    	return false;
                     }
                     
-                    if($order->canInvoice()) {
-                        
-                        $state = Mage_Sales_Model_Order::STATE_PROCESSING;
-                        $status = Mage_Sales_Model_Order::STATE_PROCESSING;
-                        $comment = Mage::helper('pagseguro')->__('Payment confirmed by PagSeguro (%s). PagSeguro Transaction: %s.', $this->getPaymentMethodType(), $this->getCode()) ;
-                        $notify = true;
-                        $visibleOnFront = true;
-                        
-                        $invoice = $order->prepareInvoice();
-                        $invoice->register()->pay();
-                        $invoice->addComment($comment, $notify, $visibleOnFront)->save();
-                        $invoice->sendUpdateEmail($visibleOnFront, $comment);
-                        $invoice->setEmailSent(true);
-                        
-                        Mage::getModel('core/resource_transaction')->addObject($invoice)
-                                                                   ->addObject($invoice->getOrder())
-                                                                   ->save();
-                        
-                        $comment = Mage::helper('pagseguro')->__('Invoice #%s was created.', $invoice->getIncrementId());
-                        $order->setState($state, $status, $comment, true)->save();
-                        
-                        $this->log($order->getRealOrderId(), null, 'orders.log');
-                        
-                    }
-					
                     break;
                 case self::STATUS_CANCELED:
                 case self::STATUS_RETURNED:
                     
-                    if ($order->canUnhold()) {
-                        $order->unhold();
-                    }
-                    
-                    if($order->canCancel()) {
-                        
-                        $state = Mage_Sales_Model_Order::STATE_CANCELED;
-                        $status = Mage_Sales_Model_Order::STATE_CANCELED;
-                        $comment = $this->__('Order was canceled by PagSeguro.');
-                        
-                        $order->getPayment()->setMessage($comment)->save();
-                        $order->setState($state, $status, $comment, true)->save();
-                        $order->cancel();
-                    }
-					
+                	$result = $ordersModel->processOrderCanceled()->getResponse();
+                	if($result === OsStudios_PagSeguro_Model_Returns_Orders::ORDER_NOTPROCESSED) {
+                		return false;
+                	}
+                	
                     break;
                 case self::STATUS_WAITING_PAYMENT:
                 case self::STATUS_ANALYSIS:
                 case self::STATUS_IN_DISPUTE:
                 default:
-                    if($order->canHold()) {
-                        $order->hold();
-                    }
+                    
+                	$result = $ordersModel->processOrderWaiting()->getResponse();
+            		if($result === OsStudios_PagSeguro_Model_Returns_Orders::ORDER_NOTPROCESSED) {
+                		return false;
+                	}
+                	
                     break;
             }
+            
+            return true;
         }
     }
 }

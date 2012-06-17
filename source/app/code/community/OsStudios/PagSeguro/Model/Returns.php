@@ -23,59 +23,60 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	const PAGSEGURO_RETURN_RESPONSE_ERROR = 'Process Error';
 	
     /**
-     * 
      * Default return from PagSeguro
+     * 
      * @var (int)
      */
 	const PAGSEGURO_RETURN_TYPE_DEFAULT = 1;
 	
 	/**
-     * 
      * Api return from PagSeguro
+     * 
      * @var (int)
      */
 	const PAGSEGURO_RETURN_TYPE_API = 2;
 	
 	/**
-     * 
      * Request a consult in PagSeguro
+     * 
      * @var (int)
      */
 	const PAGSEGURO_RETURN_TYPE_CONSULT = 3;
 	
 	/**
-	 * 
 	 * Handle the return type
+	 * 
 	 * @var (const)
 	 */
 	protected $_returnType = null;
 	
 	/**
-	 * 
 	 * Handle the post information
+	 * 
 	 * @var (mixed)
 	 */
 	protected $_post = null;
 	
 	/**
-	 * 
 	 * Handle the process result
+	 * 
 	 * @var (bool)
 	 */
 	protected $_success = false;
 	
 	/**
-	 * 
 	 * Handle the response result
+	 * 
 	 * @var (mixed)
 	 */
 	protected $_response = null;
 	
 	
 	/**
-	 * 
 	 * Sets the post data
+	 * 
 	 * @param (mixed) $post
+	 * @return OsStudios_PagSeguro_Model_Returns
 	 */
 	public function setPostData($post)
 	{
@@ -86,9 +87,10 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	
 	
 	/**
-	 * 
 	 * Sets the return type
-	 * @param unknown_type $type
+	 * 
+	 * @param (int) $type
+	 * @return OsStudios_PagSeguro_Model_Returns
 	 */
 	public function setReturnType($type = self::PAGSEGURO_RETURN_TYPE_DEFAULT)
 	{
@@ -98,8 +100,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	
 	
 	/**
-	 * 
 	 * Return true if the returned has processed
+	 * 
 	 * @return (bool)
 	 */
 	public function isSuccess()
@@ -109,8 +111,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	
 	
 	/**
-	 * 
 	 * Return response of the return
+	 * 
 	 * @return (bool)
 	 */
 	public function getResponse()
@@ -119,6 +121,11 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	}
 	
 	
+	/**
+	 * Validates the received post in PagSeguro
+	 * 
+	 * @return (int)
+	 */
 	protected function _validate()
 	{
 		$post = $this->getPost();
@@ -141,7 +148,6 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 									CURLOPT_SSL_VERIFYPEER => false
 								));
 				$adapter->setConfig($config);
-				
 				$client->setAdapter($adapter);
 			}
 			
@@ -168,8 +174,9 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	
 	
 	/**
-	 * 
 	 * Identifies and process the correct return
+	 * 
+	 * @return OsStudios_PagSeguro_Model_Returns
 	 */
 	public function runReturns()
 	{
@@ -184,7 +191,15 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 			case self::PAGSEGURO_RETURN_TYPE_API:
 				
 				$model = Mage::getModel('pagseguro/returns_types_api');
+				$this->_response = $model->processReturn()->getResponse();
 				
+				$errArray = array(self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED, self::PAGSEGURO_RETURN_RESPONSE_ERROR);
+				
+				if(in_array($this->_response, $errArray)) {
+					$this->_success = false;
+				} else {
+					$this->_success = true;
+				}
 				
 				break;
 			
@@ -198,6 +213,7 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 				$model = Mage::getModel('pagseguro/returns_types_consult');
 				
 				$this->_response = $model->processReturn()->getResponse();
+				
 				if($this->_response == self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED) {
 					$errMsg = $this->__('The consult was not authorized by PagSeguro.');
 					$stop = true;
@@ -212,7 +228,6 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 				}
 				
 				$this->_success = true;
-				return $this;
 				
 				break;
 				
@@ -224,16 +239,21 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 				
 				if($this->_validate()) {
 					$model = Mage::getModel('pagseguro/returns_types_default');
-					
-					
+					$this->_response = $model->processReturn()->getResponse();
 				}
 				
-				$this->_success = true;
-				return $this;
+				$errArray = array(self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED, self::PAGSEGURO_RETURN_RESPONSE_ERROR);
+				
+				if(in_array($this->_response, $errArray)) {
+					$this->_success = false;
+				} else {
+					$this->_success = true;
+				}
 				
 				break;
 		}
 		
+		return $this;
 	}
 	
 }
