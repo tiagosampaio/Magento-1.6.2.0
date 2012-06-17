@@ -18,8 +18,10 @@
 class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstract
 {
 	
+	const PAGSEGURO_RETURN_RESPONSE_SUCCESS = true;
+	const PAGSEGURO_RETURN_RESPONSE_FAIL = false;
 	const PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED = 'Unauthorized';
-	const PAGSEGURO_REUTRN_RESPONSE_AUTHORIZED = 'Authorized';
+	const PAGSEGURO_RETURN_RESPONSE_AUTHORIZED = 'Authorized';
 	const PAGSEGURO_RETURN_RESPONSE_ERROR = 'Process Error';
 	
     /**
@@ -122,12 +124,50 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	
 	
 	/**
+	 * Runs before validation
+	 */
+	protected function _beforeValidate()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs after validation
+	 */
+	protected function _afterValidate()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs before validation
+	 */
+	protected function _beforeReturns()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs after validation
+	 */
+	protected function _afterReturns()
+	{
+		
+	}
+	
+	
+	/**
 	 * Validates the received post in PagSeguro
 	 * 
 	 * @return (int)
 	 */
 	protected function _validate()
 	{
+		$this->_beforeValidate();
+		
 		$post = $this->getPost();
 		
 		if( !empty($post)) {
@@ -169,7 +209,11 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 			
 			$result = (strcmp($return, 'VERIFICADO') == 0);
 		}
+		
+		$this->_afterValidate();
+		
 		return $result;
+		//return true;
 	}
 	
 	
@@ -180,6 +224,9 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	 */
 	public function runReturns()
 	{
+		
+		$this->_beforeReturns();
+		
 		$type = $this->_returnType;
 		$post = $this->getPost();
 		
@@ -239,7 +286,7 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 				
 				if($this->_validate()) {
 					$model = Mage::getModel('pagseguro/returns_types_default');
-					$this->_response = $model->processReturn()->getResponse();
+					$this->_response = $model->setPostData($post)->processReturn()->getResponse();
 				}
 				
 				$errArray = array(self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED, self::PAGSEGURO_RETURN_RESPONSE_ERROR);
@@ -252,6 +299,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 				
 				break;
 		}
+		
+		$this->_afterReturns();
 		
 		return $this;
 	}

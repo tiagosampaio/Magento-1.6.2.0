@@ -29,6 +29,25 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
 		return $this->_response;
 	}
 	
+	
+	/**
+	 * Runs before process any order
+	 */
+	protected function _beforeProcessOrder()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs before process any order
+	 */
+	protected function _afterProcessOrder()
+	{
+		
+	}
+	
+	
 	/**
 	 * Set current Order
 	 * 
@@ -61,6 +80,9 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
 	 */
 	public function processOrderCanceled()
 	{
+		
+		$this->_beforeProcessOrder();
+		
 		if(!$this->_order) {
 			return $this;
 		}
@@ -79,9 +101,14 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
             $order->getPayment()->setMessage($comment)->save();
             $order->setState($state, $status, $comment, true)->save();
 			$order->cancel();
+			
+			$this->_response = self::ORDER_PROCESSED;
+		} else {
+			$this->_response = self::ORDER_NOTPROCESSED;
 		}
 		
-		$this->_response = self::ORDER_PROCESSED;
+		$this->_afterProcessOrder();
+		
 		return $this;
 	}
 	
@@ -93,6 +120,9 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
 	 */
 	public function processOrderApproved()
 	{
+		
+		$this->_beforeProcessOrder();
+		
 		if(!$this->_order) {
 			return $this;
 		}
@@ -122,10 +152,15 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
                                                        ->save();
                         
             $comment = Mage::helper('pagseguro')->__('Invoice #%s was created.', $invoice->getIncrementId());
-            $order->setState($state, $status, $comment, true)->save();			
+            $order->setState($state, $status, $comment, true)->save();
+
+            $this->_response = self::ORDER_PROCESSED;
+		} else {
+			$this->_response = self::ORDER_NOTPROCESSED;
 		}
 		
-		$this->_response = self::ORDER_PROCESSED;
+		$this->_afterProcessOrder();
+		
 		return $this;
 	}
 	
@@ -137,6 +172,9 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
 	 */
 	public function processOrderWaiting()
 	{
+		
+		$this->_beforeProcessOrder();
+		
 		if(!$this->_order) {
 			return $this;
 		}
@@ -145,9 +183,14 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
 		
 		if($order->canHold()) {
 			$order->hold();
+			
+			$this->_response = self::ORDER_PROCESSED;
+		} else {
+			$this->_response = self::ORDER_NOTPROCESSED;
 		}
 		
-		$this->_response = self::ORDER_PROCESSED;
+		$this->_afterProcessOrder();
+		
 		return $this;
 	}
 }

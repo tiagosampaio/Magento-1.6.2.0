@@ -52,7 +52,7 @@ class OsStudios_PagSeguro_PayController extends OsStudios_PagSeguro_Controller_F
             
             $order_redirect = false;
             
-            // Checks if Payment Method is really the PagSeguro Method 
+            // Checks if Payment Method is really the PagSeguro Method
             if ($order->getPayment()->getMethod() == $pagseguro->getCode()) {
                 
                 switch ($order->getState()) {

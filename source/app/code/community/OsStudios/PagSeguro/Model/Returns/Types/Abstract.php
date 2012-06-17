@@ -34,6 +34,24 @@ abstract class OsStudios_PagSeguro_Model_Returns_Types_Abstract extends OsStudio
 	
 	
 	/**
+	 * Runs before process any return
+	 */
+	protected function _beforeProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs before process any return
+	 */
+	protected function _afterProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
 	 * Return true if the returned has processed
 	 * 
 	 * @return (bool)

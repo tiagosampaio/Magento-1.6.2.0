@@ -36,6 +36,24 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
 	
 	
 	/**
+	 * Runs before process any return
+	 */
+	protected function _beforeProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs before process any return
+	 */
+	protected function _afterProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
 	 * Sets the post data
 	 * 
 	 * @param (mixed) $post
@@ -76,6 +94,16 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
 	 */
 	public function processReturn()
 	{
+		
+		$this->_beforeProcessReturn();
+		
+		Mage::getModel('pagseguro/returns_types_transactions_transaction', $this->getPost())->processTransaction();
+		
+		$this->_response = self::PAGSEGURO_RETURN_RESPONSE_SUCCESS;
+		$this->_success = true;
+		
+		$this->_afterProcessReturn();
+		
 		return $this;
 	}
     

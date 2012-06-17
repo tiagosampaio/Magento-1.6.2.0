@@ -55,6 +55,24 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	
 	
 	/**
+	 * Runs before process any return
+	 */
+	protected function _beforeProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs before process any return
+	 */
+	protected function _afterProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
 	 * Sets the initial date to consult transactions
 	 * 
 	 * @param (mixed) $date
@@ -134,7 +152,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	public function processReturn()
 	{
-        
+		$this->_beforeProcessReturn();
+		
 		$this->_params['initialDate'] = '2012-06-08T00:00';
 		$this->_params['finalDate'] = $this->getDateEnding();
 		$this->_params['page'] = '1';
@@ -161,14 +180,15 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 		
 		$return = $xml->getNode('transactions/transaction');
 		
-                
 		foreach( $return as $transaction )
 		{
 			Mage::getModel('pagseguro/returns_types_transactions_transaction', $transaction->asArray(), self::PAGSEGURO_RETURN_TYPE_CONSULT)->processTransaction();
 		}
 		
-		$this->_response = self::PAGSEGURO_REUTRN_RESPONSE_AUTHORIZED;
+		$this->_response = self::PAGSEGURO_RETURN_RESPONSE_AUTHORIZED;
 		$this->_success = true;
+		
+		$this->_afterProcessReturn();
 		
 		return $this;
 	}

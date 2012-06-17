@@ -24,34 +24,39 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @var (int)
      */
     const PAYMENT_TYPE_CC = 1;
-
+	const PAYMENT_TYPE_CC_STRING = 'Cartão de Crédito';
+    
     /**
      * 
      * Paid with Billet
      * @var (int)
      */
     const PAYMENT_TYPE_BILLET = 2;
-
+	const PAYMENT_TYPE_BILLET_STRING = 'Boleto';
+    
     /**
      * 
      * Paid with Online Debit (TEF)
      * @var (int)
      */
     const PAYMENT_TYPE_DEBIT = 3;
-
+	const PAYMENT_TYPE_DEBIT_STRING = 'Pagamento Online';
+    
     /**
      * 
      * Paid with PagSeguro Account Credits
      * @var (int)
      */
     const PAYMENT_TYPE_PAGSEGUROCREDIT = 4;
-
+	const PAYMENT_TYPE_PAGSEGUROCREDIT_STRING = 'Pagamento';
+    
     /**
      * 
      * Paid with Oi Paggo via Celphones
      * @var (int)
      */
     const PAYMENT_TYPE_OIPAGGO = 5;
+    const PAYMENT_TYPE_OIPAGGO_STRING = 'Oi Paggo';
     
     /**
      * 
@@ -59,6 +64,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @var (int)
      */
     const STATUS_WAITING_PAYMENT = 1;
+    const STATUS_WAITING_PAYMENT_STRING = 'Aguardando Pagto';
     
     /**
      * 
@@ -66,6 +72,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @var (int)
      */
     const STATUS_ANALYSIS = 2;
+    const STATUS_ANALYSIS_STRING = 'Em Análise';
     
     /**
      * 
@@ -73,6 +80,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @var (int)
      */
     const STATUS_PAID = 3;
+    const STATUS_PAID_STRING = 'Aprovado';
     
     /**
      * 
@@ -80,6 +88,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @var (int)
      */
     const STATUS_AVAILABLE = 4;
+    const STATUS_AVAILABLE_STRING = 'Completo';
     
     /**
      * 
@@ -101,6 +110,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @var (int)
      */
     const STATUS_CANCELED = 7;
+	const STATUS_CANCELED_STRING = 'Cancelado';
+    
     
     /**
      * 
@@ -108,6 +119,24 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @var (int)
      */
     protected $_transactionType = self::PAGSEGURO_RETURN_TYPE_DEFAULT;
+    
+    
+	/**
+	 * Runs before process any transaction
+	 */
+	protected function _beforeProcessTransaction()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs before process any transaction
+	 */
+	protected function _afterProcessTransaction()
+	{
+		
+	}
     
     
     /**
@@ -143,7 +172,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
                      ->setFeeAmount($transaction['feeAmount'])
                      ->setNetAmount($transaction['netAmount'])
                      ->setExtraAmount($transaction['extraAmount'])
-                     ->setLastEventDate($transaction['lastEventDate']);
+                     ->setLastEventDate($transaction['lastEventDate'])
+                     ;
                 
                 switch ($transaction['paymentMethod']['type']) {
                     case self::PAYMENT_TYPE_CC:
@@ -171,6 +201,15 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
                 break;
             case self::PAGSEGURO_RETURN_TYPE_DEFAULT:
             default:
+            	
+            	$this->setDate($transaction['DataTransacao'])
+                     ->setReference($transaction['Referencia'])
+                     ->setCode($transaction['TransacaoID'])
+                     ->setType($transaction['TipoPagamento'])
+                     ->setStatus($transaction['StatusTransacao'])
+                     //->setStatus( self::STATUS_PAID )
+            		;
+            		
                 break;
         }
         
@@ -182,6 +221,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      */
     public function processTransaction()
     {
+    	
+    	$this->_beforeProcessTransaction();
+    	
         $order = $this->loadOrderByIncrementId($this->getReference());
         
         if($order instanceof Mage_Sales_Model_Order) {
@@ -195,7 +237,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
 		    					
             switch ($this->getStatus()) {
                 case self::STATUS_PAID:
+                case self::STATUS_PAID_STRING:
                 case self::STATUS_AVAILABLE:
+                case self::STATUS_AVAILABLE_STRING:
                     
                     $result = $ordersModel->processOrderApproved()->getResponse();
                     if($result === OsStudios_PagSeguro_Model_Returns_Orders::ORDER_NOTPROCESSED) {
@@ -204,6 +248,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
                     
                     break;
                 case self::STATUS_CANCELED:
+                case self::STATUS_CANCELED_STRING:
                 case self::STATUS_RETURNED:
                     
                 	$result = $ordersModel->processOrderCanceled()->getResponse();
@@ -213,7 +258,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
                 	
                     break;
                 case self::STATUS_WAITING_PAYMENT:
+                case self::STATUS_WAITING_PAYMENT_STRING:
                 case self::STATUS_ANALYSIS:
+                case self::STATUS_ANALYSIS_STRING:
                 case self::STATUS_IN_DISPUTE:
                 default:
                     
@@ -224,6 +271,10 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
                 	
                     break;
             }
+            
+            $ordersModel->unsetOrder();
+            
+            $this->_afterProcessTransaction();
             
             return true;
         }

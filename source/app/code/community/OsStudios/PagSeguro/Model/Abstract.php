@@ -39,6 +39,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
             $storeId = $this->getStore();
         }
         $path = $this->_configPrefix.$field;
+        
         return Mage::getStoreConfig($path, $storeId);
     }
 	
@@ -102,7 +103,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * 
      * @return string
      */ 
-    protected function getPagSeguroUrl()
+    public function getPagSeguroUrl()
     {
         $url = $this->getConfigData('pagseguro_url');
     	if(!$url) {
@@ -118,7 +119,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * 
      * @return string
      */ 
-    protected function getPagSeguroNPIUrl()
+    public function getPagSeguroNPIUrl()
     {
         $url = $this->getConfigData('pagseguro_npi_url');
     	if(!$url) {
@@ -134,7 +135,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
      * @param string $transactionId = PagSeguro Transaction ID 
      * @return (string)
      */ 
-    protected function getPagSeguroBoletoUrl($transactionId, $escapeHtml = true)
+    public function getPagSeguroBoletoUrl($transactionId, $escapeHtml = true)
     {
         $url = $this->getConfigData('pagseguro_billet_url');
     	if(!$url) {
@@ -154,7 +155,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
 	 * Returns transactions URL
 	 * @return (string)
 	 */
-	protected function getPagSeguroTransactionsUrl()
+	public function getPagSeguroTransactionsUrl()
 	{
 		$url = $this->getConfigData('pagseguro_transactions_url');
 		if(!$url) {

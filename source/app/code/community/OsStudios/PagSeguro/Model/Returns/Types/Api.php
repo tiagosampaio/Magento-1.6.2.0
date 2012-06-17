@@ -34,6 +34,24 @@ class OsStudios_PagSeguro_Model_Returns_Types_Api extends OsStudios_PagSeguro_Mo
 	
 	
 	/**
+	 * Runs before process any return
+	 */
+	protected function _beforeProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
+	 * Runs before process any return
+	 */
+	protected function _afterProcessReturn()
+	{
+		
+	}
+	
+	
+	/**
 	 * Return true if the returned has processed
 	 * 
 	 * @return (bool)
@@ -62,6 +80,10 @@ class OsStudios_PagSeguro_Model_Returns_Types_Api extends OsStudios_PagSeguro_Mo
 	 */
 	public function processReturn()
 	{
+		$this->_beforeProcessReturn();
+		
+		$this->_afterProcessReturn();
+		
 		return $this;
 	}
     
