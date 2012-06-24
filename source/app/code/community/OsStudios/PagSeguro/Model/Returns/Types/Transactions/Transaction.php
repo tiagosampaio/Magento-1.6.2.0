@@ -18,6 +18,8 @@
 class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends OsStudios_PagSeguro_Model_Returns
 {
     
+	const TABS = '			';
+	
     /**
      * 
      * Paid with Credit Card
@@ -124,9 +126,27 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
 	/**
 	 * Runs before process any transaction
 	 */
+	protected function _beforeLogTransactionData()
+	{
+		$this->log($this->__('%s--- Transaction Data. ---', self::TABS));
+		$this->log($this->__('%s--- ***** ---', self::TABS));
+		
+		$this->log($this->__('%sDate: %s.', self::TABS, $this->getDate()));
+        $this->log($this->__('%sReference: %s.', self::TABS, $this->getReference()));
+        $this->log($this->__('%sCode: %s.', self::TABS, $this->getCode()));
+        $this->log($this->__('%sType: %s.', self::TABS, $this->getType()));
+        $this->log($this->__('%sPayment Type: %s.', self::TABS, $this->getPaymentMethodType()));
+        $this->log($this->__('%sStatus: %s.', self::TABS, $this->getStatus()));
+	}
+    
+    
+	/**
+	 * Runs before process any transaction
+	 */
 	protected function _beforeProcessTransaction()
 	{
-		
+		$this->log($this->__('%s--- Initializing Transaction Process. ---', self::TABS));
+		$this->log($this->__('%s--- ***** ---', self::TABS));
 	}
 	
 	
@@ -135,7 +155,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
 	 */
 	protected function _afterProcessTransaction()
 	{
-		
+		$this->log($this->__('%s--- ***** ---', self::TABS));
+		$this->log($this->__('%s--- Finishing Transaction Process. ---', self::TABS));
 	}
     
     
@@ -157,8 +178,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
     
     
     public function setTransactionData($transaction = array())
-    {
-    	
+    {    	
         switch ($this->_transactionType) {
             case self::PAGSEGURO_RETURN_TYPE_API:
             	
@@ -238,7 +258,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
         	
 			$ordersModel = Mage::getModel('pagseguro/returns_orders');
 			$ordersModel->setOrder($order);
-		    					
+			
+			$this->_beforeLogTransactionData();
+			
             switch ($this->getStatus()) {
                 case self::STATUS_PAID:
                 case self::STATUS_PAID_STRING:

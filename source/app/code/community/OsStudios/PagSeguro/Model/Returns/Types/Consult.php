@@ -18,6 +18,8 @@
 class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSeguro_Model_Returns_Types_Abstract
 {
 	
+	const TABS = '		';
+	
 	/**
      * Handle the parameters used in consult
      * 
@@ -59,7 +61,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	protected function _beforeProcessReturn()
 	{
-		
+		$this->log($this->__('%sInitializing Return Process', self::TABS));
 	}
 	
 	
@@ -68,7 +70,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	protected function _afterProcessReturn()
 	{
-		
+		$this->log($this->__('%sFinishing Return Process', self::TABS));
 	}
 	
 	
@@ -160,7 +162,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 		$this->_params['maxPageResults'] = '100';
 		$this->_params['email'] = $this->getCredentials()->getAccountEmail();
 		$this->_params['token'] = $this->getCredentials()->getToken();
-                
+
+		$this->log( $this->__('%sDate Range of Consult: %s to %s.', self::TABS, $this->_params['initialDate'], $this->_params['finalDate']) );
+		
 		$client = new Zend_Http_Client($this->getPagSeguroTransactionsUrl());
 		$client->setMethod(Zend_Http_Client::GET)
 			   ->setParameterGet($this->_params);
@@ -170,9 +174,11 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 		
 		if($body == self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED) {
 			$this->_response = self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED;
+			$this->log($this->__('%sResponse from PagSeguro: %s', self::TABS, $this->_response));
 			return $this;
 		} elseif(!Mage::helper('pagseguro')->isXml($body)) {
 			$this->_response = self::PAGSEGURO_RETURN_RESPONSE_ERROR;
+			$this->log($this->__('%sResponse from PagSeguro: %s', self::TABS, $this->_response));
 			return $this;
 		}
 		

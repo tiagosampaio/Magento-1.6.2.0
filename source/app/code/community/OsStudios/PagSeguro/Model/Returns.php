@@ -24,6 +24,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	const PAGSEGURO_RETURN_RESPONSE_AUTHORIZED = 'Authorized';
 	const PAGSEGURO_RETURN_RESPONSE_ERROR = 'Process Error';
 	
+	const TABS = '	';
+	
     /**
      * Default return from PagSeguro
      * 
@@ -149,7 +151,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	 */
 	protected function _beforeReturns()
 	{
-		
+		$this->log( $this->__('Begining return.') );
+		$this->log( $this->__('-- ***** --.') );
 	}
 	
 	
@@ -158,7 +161,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	 */
 	protected function _afterReturns()
 	{
-		
+		$this->log($this->__('-- ***** --.'));
+		$this->log($this->__('Finishing return.'));
 	}
 	
 	
@@ -258,17 +262,21 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 			 */
 			case self::PAGSEGURO_RETURN_TYPE_CONSULT:
 				
+				$this->log($this->__('%sReturn Type: %s.', self::TABS, self::PAGSEGURO_RETURN_TYPE_CONSULT_STRING));
+				
 				$stop = false;
 				
 				$model = Mage::getModel('pagseguro/returns_types_consult');
 				
 				$this->_response = $model->processReturn()->getResponse();
 				
+				$this->log( $this->__('Response from Pagseguro: %s', $this->_response) );
+				
 				if($this->_response == self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED) {
-					$errMsg = $this->__('The consult was not authorized by PagSeguro.');
+					$errMsg = $this->__('%sThe consult was not authorized by PagSeguro.', self::TABS);
 					$stop = true;
 				} elseif ($this->_response == self::PAGSEGURO_RETURN_RESPONSE_ERROR) {
-					$errMsg = $this->__('PagSeguro has returned an error.');
+					$errMsg = $this->__('%sPagSeguro has returned an error.', self::TABS);
 					$stop = true;
 				}
 				

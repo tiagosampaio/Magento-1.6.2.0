@@ -180,13 +180,27 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
 	
 	
 	/**
+	 * Get helper
+     * 
+	 * @return OsStudios_PagSeguro_Helper_Data
+	 */
+	protected function helper()
+	{
+		return Mage::helper('pagseguro');
+	}
+	
+	
+	/**
 	 * Extends translation functionality
-         * 
-         * @return (string)
+     * 
+	 * @return (string)
 	 */
 	protected function __($string)
 	{
-            return Mage::helper('pagseguro')->__($string);
+		$args = func_get_args();
+        $expr = new Mage_Core_Model_Translate_Expr(array_shift($args), 'pagseguro');
+        array_unshift($args, $expr);
+        return Mage::app()->getTranslator()->translate($args);
 	}
 	
 	protected function _redirect($path = '', $params = array())
