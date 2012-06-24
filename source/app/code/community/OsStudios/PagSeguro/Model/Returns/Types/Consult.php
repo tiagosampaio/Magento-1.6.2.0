@@ -182,7 +182,10 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 		
 		foreach( $return as $transaction )
 		{
-			Mage::getModel('pagseguro/returns_types_transactions_transaction', $transaction->asArray(), self::PAGSEGURO_RETURN_TYPE_CONSULT)->processTransaction();
+			$model = Mage::getModel('pagseguro/returns_types_transactions_transaction');
+			$model->setTransactionType(self::PAGSEGURO_RETURN_TYPE_CONSULT)
+				  ->setTransactionData($transaction->asArray())
+				  ->processTransaction();
 		}
 		
 		$this->_response = self::PAGSEGURO_RETURN_RESPONSE_AUTHORIZED;

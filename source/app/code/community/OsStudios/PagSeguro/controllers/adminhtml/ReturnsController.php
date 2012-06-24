@@ -25,12 +25,12 @@ class OsStudios_PagSeguro_Adminhtml_ReturnsController extends Mage_Adminhtml_Con
     
 	public function updatesAction()
 	{
-		$this->loadLayout()
-			 ->renderLayout();
-			 
 		$returns = Mage::getModel('pagseguro/returns');
 		$returns->setReturnType(OsStudios_PagSeguro_Model_Returns::PAGSEGURO_RETURN_TYPE_CONSULT)
 				->runReturns();
+		
+		$this->_redirect('adminhtml/sales_order/');
+				
 	}
     
 }

@@ -30,6 +30,7 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
      * @var (int)
      */
 	const PAGSEGURO_RETURN_TYPE_DEFAULT = 1;
+	const PAGSEGURO_RETURN_TYPE_DEFAULT_STRING = 'Default Return';
 	
 	/**
      * Api return from PagSeguro
@@ -37,6 +38,7 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
      * @var (int)
      */
 	const PAGSEGURO_RETURN_TYPE_API = 2;
+	const PAGSEGURO_RETURN_TYPE_API_STRING = 'Api Return';
 	
 	/**
      * Request a consult in PagSeguro
@@ -44,6 +46,7 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
      * @var (int)
      */
 	const PAGSEGURO_RETURN_TYPE_CONSULT = 3;
+	const PAGSEGURO_RETURN_TYPE_CONSULT_STRING = 'Consulting Return';
 	
 	/**
 	 * Handle the return type

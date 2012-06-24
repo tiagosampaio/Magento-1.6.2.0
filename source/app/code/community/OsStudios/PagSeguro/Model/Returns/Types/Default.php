@@ -97,7 +97,11 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
 		
 		$this->_beforeProcessReturn();
 		
-		Mage::getModel('pagseguro/returns_types_transactions_transaction', $this->getPost())->processTransaction();
+		$model = Mage::getModel('pagseguro/returns_types_transactions_transaction');
+		$model->setTransactionType(self::PAGSEGURO_RETURN_TYPE_DEFAULT)
+				  ->setTransactionData($this->getPost())
+				  ->processTransaction();
+		
 		
 		$this->_response = self::PAGSEGURO_RETURN_RESPONSE_SUCCESS;
 		$this->_success = true;

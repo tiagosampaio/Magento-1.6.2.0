@@ -145,22 +145,26 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      * @param (int) $transactionType
      * @return \OsStudios_PagSeguro_Model_Returns_Types_Transaction 
      */
-    public function setTransactionType($transactionType)
+    public function setTransactionType($transactionType = self::PAGSEGURO_RETURN_TYPE_DEFAULT)
     {
         $this->_transactionType = $transactionType;
         return $this;
     }
     
     
-    public function __construct($transaction = array(), $transactionType = self::PAGSEGURO_RETURN_TYPE_DEFAULT)
+    
+    
+    
+    
+    public function setTransactionData($transaction = array())
     {
-    	$this->setTransactionType($transactionType);
     	
         switch ($this->_transactionType) {
             case self::PAGSEGURO_RETURN_TYPE_API:
+            	
                 break;
             case self::PAGSEGURO_RETURN_TYPE_CONSULT:
-                
+            	
                 $this->setDate($transaction['date'])
                      ->setReference($transaction['reference'])
                      ->setCode($transaction['code'])
