@@ -20,6 +20,7 @@ abstract class OsStudios_PagSeguro_Model_Abstract extends Mage_Core_Model_Abstra
    
 	const PAGSEGURO_DATE_FORMAT = 'Y-m-d\TH:i';
 	const PAGSEGURO_LOG_FILENAME = 'osstudios_pagseguro.log';
+	const PAGSEGURO_LOG_FILENAME_POSTS = 'osstudios_pagseguro_return_posts.log';
 	
 	protected $_configPrefix = 'payment/pagseguro_config/';
 	protected $_credentials = null;

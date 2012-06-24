@@ -133,7 +133,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	 */
 	protected function _beforeValidate()
 	{
-		
+		$this->log($this->__('%sInitializing validation.', self::TABS));
+		$this->log($this->__('%s-- ***** --.', self::TABS));
 	}
 	
 	
@@ -142,7 +143,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	 */
 	protected function _afterValidate()
 	{
-		
+		$this->log($this->__('%s-- ***** --.', self::TABS));
+		$this->log($this->__('%sFinishing validation.', self::TABS));
 	}
 	
 	
@@ -151,8 +153,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 	 */
 	protected function _beforeReturns()
 	{
-		$this->log( $this->__('Begining return.') );
-		$this->log( $this->__('-- ***** --.') );
+		$this->log($this->__('Initializing return.'));
+		$this->log($this->__('-- ***** --.'));
 	}
 	
 	
@@ -176,6 +178,9 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 		$this->_beforeValidate();
 		
 		$post = $this->getPost();
+		
+		$this->log($this->__('%sValidation Post Source:', self::TABS));
+		$this->log($post);
 		
 		if( !empty($post)) {
 			
@@ -206,12 +211,12 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 				$content = $client->request();
 				$return = $content->getBody();
 				
-				$this->log($return);
+				$this->log($this->__('%sValidation Result: %s.', self::TABS, $return));
 				
 			} catch (Mage_Core_Exception $e) {
-				$this->log($e->getMessage());
+				$this->log($this->__('%sValidation Error: %s.', self::TABS, $e->getMessage()));
 			} catch (Exception $e) {
-				$this->log($e->getMessage());
+				$this->log($this->__('%sValidation Error: %s.', self::TABS, $e->getMessage()));
 			}
 			
 			$result = (strcmp($return, 'VERIFICADO') == 0);
@@ -237,6 +242,8 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 		$type = $this->_returnType;
 		$post = $this->getPost();
 		
+		$this->log($post, null, self::PAGSEGURO_LOG_FILENAME_POSTS);
+		
 		switch ($type)
 		{
 			/**
@@ -244,8 +251,10 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 			 */
 			case self::PAGSEGURO_RETURN_TYPE_API:
 				
+				$this->log($this->__('%sReturn Type: %s.', self::TABS, self::PAGSEGURO_RETURN_TYPE_API_STRING));
+				
 				$model = Mage::getModel('pagseguro/returns_types_api');
-				$this->_response = $model->processReturn()->getResponse();
+				$this->_response = $model->setPostData($post)->processReturn()->getResponse();
 				
 				$errArray = array(self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED, self::PAGSEGURO_RETURN_RESPONSE_ERROR);
 				
@@ -295,9 +304,14 @@ class OsStudios_PagSeguro_Model_Returns extends OsStudios_PagSeguro_Model_Abstra
 			case self::PAGSEGURO_RETURN_TYPE_DEFAULT:
 			default:
 				
+				$this->log($this->__('%sReturn Type: %s.', self::TABS, self::PAGSEGURO_RETURN_TYPE_DEFAULT_STRING));
+				
 				if($this->_validate()) {
+					$this->log($this->__('%sValidation Successfully Done.', self::TABS));
 					$model = Mage::getModel('pagseguro/returns_types_default');
 					$this->_response = $model->setPostData($post)->processReturn()->getResponse();
+				} else {
+					$this->log($this->__('%sValidation Failed.', self::TABS));
 				}
 				
 				$errArray = array(self::PAGSEGURO_RETURN_RESPONSE_UNAUTHORIZED, self::PAGSEGURO_RETURN_RESPONSE_ERROR);

@@ -61,7 +61,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	protected function _beforeProcessReturn()
 	{
-		$this->log($this->__('%sInitializing Return Process', self::TABS));
+		$this->log($this->__('%sInitializing Consult Return Process', self::TABS));
 	}
 	
 	
@@ -70,7 +70,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	protected function _afterProcessReturn()
 	{
-		$this->log($this->__('%sFinishing Return Process', self::TABS));
+		$this->log($this->__('%sFinishing Consult Return Process', self::TABS));
 	}
 	
 	

@@ -18,6 +18,8 @@
 class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSeguro_Model_Returns_Types_Abstract
 {
 	
+	const TABS = '		';
+	
 	protected $_post = null;
 	
 	/**
@@ -40,7 +42,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
 	 */
 	protected function _beforeProcessReturn()
 	{
-		
+		$this->log($this->__('%sInitializing Default Return Process', self::TABS));
 	}
 	
 	
@@ -49,7 +51,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
 	 */
 	protected function _afterProcessReturn()
 	{
-		
+		$this->log($this->__('%sFinishing Default Return Process', self::TABS));
 	}
 	
 	

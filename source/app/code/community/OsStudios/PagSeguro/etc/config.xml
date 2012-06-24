@@ -123,7 +123,7 @@
              	 <pagseguro_url>https://pagseguro.uol.com.br/security/webpagamentos/webpagto.aspx</pagseguro_url>
                  <pagseguro_npi_url>https://pagseguro.uol.com.br/pagseguro-ws/checkout/NPI.jhtml</pagseguro_npi_url>
                  <pagseguro_billet_url>https://pagseguro.uol.com.br/checkout/imprimeBoleto.jhtml</pagseguro_billet_url>
-                 <pagseguro_transactions_url>https://ws.pagseguro.uol.com.br/v2/transactions</pagseguro_transactions_url>
+                 <pagseguro_transactions_url>https://ws.pagseguro.uol.com.br</pagseguro_transactions_url>
                  <log_enable>1</log_enable>
                  <log_types>begend_tags,return_data,confimation_status,order_status,log_separator</log_types>
                  <use_curl>1</use_curl>
