@@ -68,18 +68,6 @@
                                         <show_in_website>1</show_in_website>
                                         <show_in_store>1</show_in_store>
                                     </log_enable>
-                                    <log_types translate="label">
-                                        <label>Log Types</label>
-                                        <frontend_type>multiselect</frontend_type>
-                                        <source_model>pagseguro/system_config_source_log_types</source_model>
-                                        <sort_order>57</sort_order>
-                                        <show_in_default>1</show_in_default>
-                                        <show_in_website>1</show_in_website>
-                                        <show_in_store>1</show_in_store>
-                                        <depends>
-                                            <log_enable>1</log_enable>
-                                        </depends>
-                                    </log_types>
                                     
                                     <use_curl translate="label">
 									    <label>Use cURL</label>
@@ -90,6 +78,46 @@
 									    <show_in_website>1</show_in_website>
 									    <show_in_store>1</show_in_store>
 									</use_curl>
+                                    
+                                    <return_default_enable translate="label">
+                                        <label>Enable Default Return Process</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>adminhtml/system_config_source_yesno</source_model>
+                                        <sort_order>15</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </return_default_enable>
+                                                                        
+                                    <return_api_enable translate="label">
+                                        <label>Enable API Notifications Process</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>adminhtml/system_config_source_yesno</source_model>
+                                        <sort_order>16</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </return_api_enable>
+                                    
+                                    <paid_orders_change_to translate="label">
+                                        <label>Change Paid Orders to Status</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>pagseguro/system_config_source_order_status_paid</source_model>
+                                        <sort_order>16</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </paid_orders_change_to>
+                                    
+                                    <canceled_orders_change_to translate="label">
+                                        <label>Change Canceled Orders to Status</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>pagseguro/system_config_source_order_status_canceled</source_model>
+                                        <sort_order>17</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </canceled_orders_change_to>
                                     
                                     <return_consult_range translate="label">
                                         <label>Days Range for Consult Orders</label>
@@ -269,6 +297,14 @@
                         
 			  	     </fields>
                 </pagseguro_hpp>
+                <pagseguro_api translate="label, comment">
+                	<label>PagSeguro - API</label>
+					<sort_order>32</sort_order>
+					<show_in_default>1</show_in_default>
+				  	<show_in_website>1</show_in_website>
+				  	<show_in_store>1</show_in_store>
+				  	<comment>This feature will be available in next versions of this module.</comment>
+                </pagseguro_api>
             </groups>
 		</payment>
 	</sections>

@@ -57,3 +57,7 @@
 "ERROR: O value received is different from the stored one (STORED VALUE: %s / RECEIVED VALUE: %s).","ERRO: O valor recebido é diferente do valor original (VALOR ORIGINAL: %s / VALOR RECEBIDO: %s)."
 "ERROR: This order was not placed with this payment method.","ERRO: Neste pedido não foi utilizado o PagSeguro como forma de pagamento."
 "ERROR: The order reference was not found.","ERRO: Este número de pedido não foi encontrado no sistema."
+"Enable Default Return Process","Habilitar Processo de Retorno Automático"
+"Enable API Notifications Process","Habilitar Processo de Notificações API"
+"Days Range for Consult Orders","Consultar pedidos de 'N' dias anteriores"
+"This feature will be available in next versions of this module.","Este recurso estará disponível nas próximas versões deste módulo."

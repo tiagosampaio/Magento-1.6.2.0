@@ -18,31 +18,12 @@
 class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSeguro_Model_Returns_Types_Abstract
 {
 	
-	const TABS = '		';
-	
-	protected $_post = null;
-	
-	/**
-	 * Handle the process result
-	 * 
-	 * @var (bool)
-	 */
-	protected $_success = false;
-	
-	/**
-	 * Handle the response result
-	 * 
-	 * @var (mixed)
-	 */
-	protected $_response = null;
-	
-	
 	/**
 	 * Runs before process any return
 	 */
 	protected function _beforeProcessReturn()
 	{
-		$this->log($this->__('%sInitializing Default Return Process', self::TABS));
+		$this->log($this->__('%s--- Initializing Default Return Process ---', self::TABS));
 	}
 	
 	
@@ -51,43 +32,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Default extends OsStudios_PagSegur
 	 */
 	protected function _afterProcessReturn()
 	{
-		$this->log($this->__('%sFinishing Default Return Process', self::TABS));
+		$this->log($this->__('%s--- Finishing Default Return Process ---', self::TABS));
 	}
 	
-	
-	/**
-	 * Sets the post data
-	 * 
-	 * @param (mixed) $post
-	 */
-	public function setPostData($post)
-	{
-		$this->_post = $post;
-		$this->setPost($this->_post);
-		return $this;
-	}
-	
-	/**
-	 * Return true if the returned has processed
-	 * 
-	 * @return (bool)
-	 */
-	public function isSuccess()
-	{
-		return $this->_success;
-	}
-	
-	
-	/**
-	 * Return response of the return
-	 * 
-	 * @return (bool)
-	 */
-	public function getResponse()
-	{
-		return $this->_response;
-	}
-    
     
     /**
 	 * Process return

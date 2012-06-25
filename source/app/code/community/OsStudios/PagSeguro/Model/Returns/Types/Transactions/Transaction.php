@@ -28,6 +28,45 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
     const PAYMENT_TYPE_CC = 1;
 	const PAYMENT_TYPE_CC_STRING = 'Cartão de Crédito';
     
+	const PAYMENT_TYPE_CC_CODE_VISA = 101;
+	const PAYMENT_TYPE_CC_CODE_VISA_STRING = 'Cartão de crédito Visa.';
+	
+	const PAYMENT_TYPE_CC_CODE_MC = 102;
+	const PAYMENT_TYPE_CC_CODE_MC_STRING = 'Cartão de crédito MasterCard.';
+	
+	const PAYMENT_TYPE_CC_CODE_AMEX = 103;
+	const PAYMENT_TYPE_CC_CODE_AMEX_STRING = 'Cartão de crédito American Express.';
+	
+	const PAYMENT_TYPE_CC_CODE_DINERS = 104;
+	const PAYMENT_TYPE_CC_CODE_DINERS_STRING = 'Cartão de crédito Diners.';
+	
+	const PAYMENT_TYPE_CC_CODE_HIPERCARD = 105;
+	const PAYMENT_TYPE_CC_CODE_HIPERCARD_STRING = 'Cartão de crédito Hipercard.';
+	
+	const PAYMENT_TYPE_CC_CODE_AURA = 106;
+	const PAYMENT_TYPE_CC_CODE_AURA_STRING = 'Cartão de crédito Aura.';
+	
+	const PAYMENT_TYPE_CC_CODE_ELO = 107;
+	const PAYMENT_TYPE_CC_CODE_ELO_STRING = 'Cartão de crédito Elo.';
+	
+	const PAYMENT_TYPE_CC_CODE_PLENOCARD = 108;
+	const PAYMENT_TYPE_CC_CODE_PLENOCARD_STRING = 'Cartão de crédito PLENOCard.';
+	
+	const PAYMENT_TYPE_CC_CODE_PERSONALCARD = 109;
+	const PAYMENT_TYPE_CC_CODE_PERSONALCARD_STRING = 'Cartão de crédito PersonalCard.';
+	
+	const PAYMENT_TYPE_CC_CODE_JCB = 110;
+	const PAYMENT_TYPE_CC_CODE_JCB_STRING = 'Cartão de crédito JCB.';
+	
+	const PAYMENT_TYPE_CC_CODE_DISCOVER = 111;
+	const PAYMENT_TYPE_CC_CODE_DISCOVER_STRING = 'Cartão de crédito Discover.';
+	
+	const PAYMENT_TYPE_CC_CODE_BRASILCARD = 112;
+	const PAYMENT_TYPE_CC_CODE_BRASILCARD_STRING = 'Cartão de crédito BrasilCard.';
+	
+	const PAYMENT_TYPE_CC_CODE_FORTBRASIL = 113;
+	const PAYMENT_TYPE_CC_CODE_FORTBRASIL_STRING = 'Cartão de crédito FORTBRASIL.';
+	
     /**
      * 
      * Paid with Billet
@@ -36,6 +75,12 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
     const PAYMENT_TYPE_BILLET = 2;
 	const PAYMENT_TYPE_BILLET_STRING = 'Boleto';
     
+	const PAYMENT_TYPE_BILLET_CODE_BRADESCO = 201;
+	const PAYMENT_TYPE_BILLET_CODE_BRADESCO_STRING = 'Boleto Bradesco.';
+	
+	const PAYMENT_TYPE_BILLET_CODE_SANTANDER = 202;
+	const PAYMENT_TYPE_BILLET_CODE_SANTANDER_STRING = 'Boleto Santander.';
+	
     /**
      * 
      * Paid with Online Debit (TEF)
@@ -44,6 +89,27 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
     const PAYMENT_TYPE_DEBIT = 3;
 	const PAYMENT_TYPE_DEBIT_STRING = 'Pagamento Online';
     
+	const PAYMENT_TYPE_DEBIT_CODE_BRADESCO = 301;
+	const PAYMENT_TYPE_DEBIT_CODE_BRADESCO_STRING = 'Débito online Bradesco.';
+	
+	const PAYMENT_TYPE_DEBIT_CODE_ITAU = 302;
+	const PAYMENT_TYPE_DEBIT_CODE_ITAU_STRING = 'Débito online Itaú.';
+	
+	const PAYMENT_TYPE_DEBIT_CODE_UNIBANCO = 303;
+	const PAYMENT_TYPE_DEBIT_CODE_UNIBANCO_STRING = 'Débito online Unibanco.';
+	
+	const PAYMENT_TYPE_DEBIT_CODE_BB = 304;
+	const PAYMENT_TYPE_DEBIT_CODE_BB_STRING = 'Débito online Banco do Brasil.';
+	
+	const PAYMENT_TYPE_DEBIT_CODE_REAL = 305;
+	const PAYMENT_TYPE_DEBIT_CODE_REAL_STRING = 'Débito online Banco Real.';
+	
+	const PAYMENT_TYPE_DEBIT_CODE_BANRISUL = 306;
+	const PAYMENT_TYPE_DEBIT_CODE_BANRISUL_STRING = 'Débito online Banrisul.';
+	
+	const PAYMENT_TYPE_DEBIT_CODE_HSBC = 307;
+	const PAYMENT_TYPE_DEBIT_CODE_HSBC_STRING = 'Débito online HSBC.';
+	
     /**
      * 
      * Paid with PagSeguro Account Credits
@@ -52,6 +118,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
     const PAYMENT_TYPE_PAGSEGUROCREDIT = 4;
 	const PAYMENT_TYPE_PAGSEGUROCREDIT_STRING = 'Pagamento';
     
+	const PAYMENT_TYPE_PAGSEGUROCREDIT_CODE = 401;
+	const PAYMENT_TYPE_PAGSEGUROCREDIT_CODE_STRING = 'Saldo PagSeguro.';
+	
     /**
      * 
      * Paid with Oi Paggo via Celphones
@@ -59,6 +128,9 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
      */
     const PAYMENT_TYPE_OIPAGGO = 5;
     const PAYMENT_TYPE_OIPAGGO_STRING = 'Oi Paggo';
+    
+    const PAYMENT_TYPE_OIPAGGO_CODE = 501;
+    const PAYMENT_TYPE_OIPAGGO_CODE_STRING = 'Oi Paggo.';
     
     /**
      * 
@@ -129,7 +201,6 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
 	protected function _beforeLogTransactionData()
 	{
 		$this->log($this->__('%s--- Transaction Data. ---', self::TABS));
-		$this->log($this->__('%s--- ***** ---', self::TABS));
 		
 		$this->log($this->__('%sDate: %s.', self::TABS, $this->getDate()));
         $this->log($this->__('%sReference: %s.', self::TABS, $this->getReference()));
@@ -146,7 +217,6 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
 	protected function _beforeProcessTransaction()
 	{
 		$this->log($this->__('%s--- Initializing Transaction Process. ---', self::TABS));
-		$this->log($this->__('%s--- ***** ---', self::TABS));
 	}
 	
 	
@@ -155,14 +225,13 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
 	 */
 	protected function _afterProcessTransaction()
 	{
-		$this->log($this->__('%s--- ***** ---', self::TABS));
 		$this->log($this->__('%s--- Finishing Transaction Process. ---', self::TABS));
 	}
     
     
     /**
-     *
      * Sets the transaction type
+     * 
      * @param (int) $transactionType
      * @return \OsStudios_PagSeguro_Model_Returns_Types_Transaction 
      */
@@ -173,16 +242,16 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
     }
     
     
-    
-    
-    
-    
+    /**
+     * Sets the transaction DATA
+     * 
+     * @param array $transaction
+     * @return OsStudios_PagSeguro_Model_Returns_Types_Transaction 
+     */
     public function setTransactionData($transaction = array())
-    {    	
+    {
         switch ($this->_transactionType) {
             case self::PAGSEGURO_RETURN_TYPE_API:
-            	
-                break;
             case self::PAGSEGURO_RETURN_TYPE_CONSULT:
             	
                 $this->setDate($transaction['date'])
@@ -190,7 +259,6 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
                      ->setCode($transaction['code'])
                      ->setType($transaction['type'])
                      ->setStatus($transaction['status'])
-                     //->setStatus( self::STATUS_PAID )
                      ->setGrossAmount($transaction['grossAmount'])
                      ->setDiscountAmount($transaction['discountAmount'])
                      ->setFeeAmount($transaction['feeAmount'])
@@ -231,11 +299,12 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
                      ->setCode($transaction['TransacaoID'])
                      ->setType($transaction['TipoPagamento'])
                      ->setStatus($transaction['StatusTransacao'])
-                     //->setStatus( self::STATUS_PAID )
             		;
             		
                 break;
         }
+        
+        //$this->setStatus( self::STATUS_PAID )
         
         return $this;
     }

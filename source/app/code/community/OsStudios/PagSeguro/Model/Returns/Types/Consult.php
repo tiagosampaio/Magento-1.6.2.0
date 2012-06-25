@@ -18,15 +18,6 @@
 class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSeguro_Model_Returns_Types_Abstract
 {
 	
-	const TABS = '		';
-	
-	/**
-     * Handle the parameters used in consult
-     * 
-     * @var (array)
-     */
-    protected $_params = array();
-	
     /**
 	 * Consult initial date
 	 * 
@@ -41,27 +32,13 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	protected $_endingDate = null;
     
-	/**
-	 * Handle the process result
-	 * 
-	 * @var (bool)
-	 */
-	protected $_success = false;
-	
-	/**
-	 * Handle the response result
-	 * 
-	 * @var (mixed)
-	 */
-	protected $_response = null;
-	
 	
 	/**
 	 * Runs before process any return
 	 */
 	protected function _beforeProcessReturn()
 	{
-		$this->log($this->__('%sInitializing Consult Return Process', self::TABS));
+		$this->log($this->__('%s--- Initializing Consult Return Process ---', self::TABS));
 	}
 	
 	
@@ -70,7 +47,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	protected function _afterProcessReturn()
 	{
-		$this->log($this->__('%sFinishing Consult Return Process', self::TABS));
+		$this->log($this->__('%s--- Finishing Consult Return Process ---', self::TABS));
 	}
 	
 	
@@ -124,28 +101,6 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
     	return $this->getCoreDate()->date(self::PAGSEGURO_DATE_FORMAT, $this->_endingDate);
     }
 	
-    
-	/**
-	 * Return true if the returned has processed
-	 * 
-	 * @return (bool)
-	 */
-	public function isSuccess()
-	{
-		return $this->_success;
-	}
-	
-	
-	/**
-	 * Return response of the return
-	 * 
-	 * @return (bool)
-	 */
-	public function getResponse()
-	{
-		return $this->_response;
-	}
-    
     
     /**
 	 * Consults and updates the order statuses with PagSeguro

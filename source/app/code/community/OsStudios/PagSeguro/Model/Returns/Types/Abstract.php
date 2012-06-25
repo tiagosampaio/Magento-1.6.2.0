@@ -18,6 +18,22 @@
 abstract class OsStudios_PagSeguro_Model_Returns_Types_Abstract extends OsStudios_PagSeguro_Model_Returns
 {
 	
+	const TABS = '		';
+	
+	/**
+     * Handle the post data
+     * 
+     * @var (array)
+     */
+	protected $_post = null;
+	
+	/**
+     * Handle the parameters used in consults
+     * 
+     * @var (array)
+     */
+    protected $_params = array();
+	
 	/**
 	 * Handle the process result
 	 * 
@@ -48,6 +64,19 @@ abstract class OsStudios_PagSeguro_Model_Returns_Types_Abstract extends OsStudio
 	protected function _afterProcessReturn()
 	{
 		
+	}
+	
+	
+	/**
+	 * Sets the post data
+	 * 
+	 * @param (mixed) $post
+	 */
+	public function setPostData($post)
+	{
+		$this->_post = $post;
+		$this->setPost($this->_post);
+		return $this;
 	}
 	
 	
