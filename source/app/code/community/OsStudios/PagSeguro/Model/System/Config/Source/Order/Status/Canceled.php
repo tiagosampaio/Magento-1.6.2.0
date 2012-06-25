@@ -31,8 +31,8 @@ class OsStudios_PagSeguro_Model_System_Config_Source_Order_Status_Canceled
 {
     // set null to enable all possible
     protected $_stateStatuses = array(
-        array('label' => 'closed', 		'value' => Mage_Sales_Model_Order::STATE_CLOSED),
-        array('label' => 'canceled', 	'value' => Mage_Sales_Model_Order::STATE_CANCELED),
+        array('label' => 'Closed', 		'value' => Mage_Sales_Model_Order::STATE_CLOSED),
+        array('label' => 'Canceled', 	'value' => Mage_Sales_Model_Order::STATE_CANCELED),
     );
 
     public function toOptionArray()
@@ -43,7 +43,7 @@ class OsStudios_PagSeguro_Model_System_Config_Source_Order_Status_Canceled
         foreach ($statuses as $status) {
             $options[] = array(
                'value' => $status['value'],
-               'label' => $status['label'],
+               'label' => Mage::helper('pagseguro')->__($status['label']),
             );
         }
         return $options;

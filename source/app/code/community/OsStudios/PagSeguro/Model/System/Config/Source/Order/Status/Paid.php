@@ -31,9 +31,9 @@ class OsStudios_PagSeguro_Model_System_Config_Source_Order_Status_Paid
 {
     // set null to enable all possible
     protected $_stateStatuses = array(
-    	array('label' => 'payment_review', 	'value' => Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW),
-    	array('label' => 'processing', 	 	'value' => Mage_Sales_Model_Order::STATE_PROCESSING),
-    	array('label' => 'holded', 			'value' => Mage_Sales_Model_Order::STATE_HOLDED),
+    	array('label' => 'Payment Review', 	'value' => Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW),
+    	array('label' => 'Processing', 	 	'value' => Mage_Sales_Model_Order::STATE_PROCESSING),
+    	array('label' => 'Holded', 			'value' => Mage_Sales_Model_Order::STATE_HOLDED),
     );
 
     public function toOptionArray()
@@ -44,7 +44,7 @@ class OsStudios_PagSeguro_Model_System_Config_Source_Order_Status_Paid
         foreach ($statuses as $status) {
             $options[] = array(
                'value' => $status['value'],
-               'label' => $status['label']
+               'label' => Mage::helper('pagseguro')->__($status['label'])
             );
         }
         return $options;

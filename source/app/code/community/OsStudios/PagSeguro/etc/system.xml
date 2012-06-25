@@ -24,7 +24,7 @@
                             
                             <pagseguro_config translate="label">
                                 <label>PagSeguro General Configuration</label>
-                                <sort_order>30</sort_order>
+                                <sort_order>2000</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
@@ -133,7 +133,7 @@
                             
 		      	<pagseguro_hpp translate="label">
 					<label>PagSeguro - HPP</label>
-					<sort_order>31</sort_order>
+					<sort_order>2010</sort_order>
 					<show_in_default>1</show_in_default>
 				  	<show_in_website>1</show_in_website>
 				  	<show_in_store>1</show_in_store>
@@ -299,7 +299,7 @@
                 </pagseguro_hpp>
                 <pagseguro_api translate="label, comment">
                 	<label>PagSeguro - API</label>
-					<sort_order>32</sort_order>
+					<sort_order>2020</sort_order>
 					<show_in_default>1</show_in_default>
 				  	<show_in_website>1</show_in_website>
 				  	<show_in_store>1</show_in_store>
