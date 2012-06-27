@@ -319,16 +319,25 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
     	
         $order = $this->loadOrderByIncrementId($this->getReference());
         
-        if($order instanceof Mage_Sales_Model_Order) {
+        if(($order instanceof Mage_Sales_Model_Order) && ($order->hasData())) {
         	
-        	$order->getPayment()->setPagseguroTransactionId($this->getCode())
-		    					->setPagseguroPaymentMethod($this->getPaymentMethodType())
-		    					->save();
+            if(($payment = $order->getPayment())) {
+                $methods = array(Mage::getModel('pagseguro/hpp')->getCode());
+                if(!in_array($payment->getMethod(), $methods)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            
+        	$payment->setPagseguroTransactionId($this->getCode())
+		    	->setPagseguroPaymentMethod($this->getPaymentMethodType())
+		    	->save();
         	
-			$ordersModel = Mage::getModel('pagseguro/returns_orders');
-			$ordersModel->setOrder($order);
+		$ordersModel = Mage::getModel('pagseguro/returns_orders');
+		$ordersModel->setOrder($order);
 			
-			$this->_beforeLogTransactionData();
+		$this->_beforeLogTransactionData();
 			
             switch ($this->getStatus()) {
                 case self::STATUS_PAID:
