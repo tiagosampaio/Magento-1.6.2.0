@@ -48,7 +48,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Api extends OsStudios_PagSeguro_Mo
 		
 		$post = $this->getPost();
 		
-		$client = new Zend_Http_Client(implode('/', array($this->getPagSeguroTransactionsUrl(), 'v2', 'transactions', 'notifications', $post['notificationCode'])));
+		$client = new Zend_Http_Client(implode('/', array($this->getPagSeguroTransactionsUrl(), 'notifications', $post['notificationCode'])));
 		
 		if( $this->getConfigData('use_curl') ) {
 			$adapter = new Zend_Http_Client_Adapter_Curl();
