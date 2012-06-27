@@ -25,7 +25,7 @@ class OsStudios_PagSeguro_Block_Info extends Mage_Payment_Block_Info
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('osstudios_pagseguro/info.phtml');
+        $this->setTemplate('osstudios/pagseguro/info.phtml');
     }
     
     protected function _beforeToHtml()

@@ -25,7 +25,7 @@ class OsStudios_PagSeguro_Block_Paylink extends Mage_Core_Block_Template
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('osstudios_pagseguro/paylink.phtml');
+        $this->setTemplate('osstudios/pagseguro/paylink.phtml');
     }
 
     /**

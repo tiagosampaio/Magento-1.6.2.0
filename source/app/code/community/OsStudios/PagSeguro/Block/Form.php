@@ -25,7 +25,7 @@ class OsStudios_PagSeguro_Block_Form extends Mage_Payment_Block_Form
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('osstudios_pagseguro/form.phtml');
+        $this->setTemplate('osstudios/pagseguro/form.phtml');
     }
     
     protected function _beforeToHtml()
