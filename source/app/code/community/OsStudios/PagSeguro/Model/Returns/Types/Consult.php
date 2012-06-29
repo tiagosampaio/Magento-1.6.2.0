@@ -58,8 +58,8 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	 */
 	public function setDateInitial($date = null)
 	{
-            $this->_initialDate = $date;
-            return $this;
+		$this->_initialDate = $date;
+        return $this;
 	}
 	
 	
@@ -69,9 +69,12 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
      * @return (string)
      * @example 2012-06-08T00:00
      */
-     public function getDateInitial()
+     public function getDateInitial($formated = true)
      {
-     	return $this->_initialDate;
+     	$daysBefore = $this->getConfigData('return_consult_range');
+     	$this->_initialDate = strtotime("-{$daysBefore} days");
+     	
+		return $formated ? $this->getCoreDate()->date(self::PAGSEGURO_DATE_FORMAT, $this->_initialDate) : $this->_initialDate;
      }
         
      
@@ -93,12 +96,12 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
      * @return (string)
      * @example 2012-06-08T00:00
      */
-	public function getDateEnding()
+	public function getDateEnding($formated = true)
     {
     	if(!$this->_endingDate) {
-    		$this->getCoreDate()->timestamp(now());
+    		$this->_endingDate = now();
     	}
-    	return $this->getCoreDate()->date(self::PAGSEGURO_DATE_FORMAT, $this->_endingDate);
+    	return $formated ? $this->getCoreDate()->date(self::PAGSEGURO_DATE_FORMAT, $this->_endingDate) : $this->_endingDate;
     }
 	
     
@@ -111,7 +114,7 @@ class OsStudios_PagSeguro_Model_Returns_Types_Consult extends OsStudios_PagSegur
 	{
 		$this->_beforeProcessReturn();
 		
-		$this->_params['initialDate'] = '2012-06-08T00:00';
+		$this->_params['initialDate'] = $this->getDateInitial();
 		$this->_params['finalDate'] = $this->getDateEnding();
 		$this->_params['page'] = '1';
 		$this->_params['maxPageResults'] = '100';

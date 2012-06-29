@@ -146,7 +146,7 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
                         
             $state = $this->getConfigData('paid_orders_change_to');
             $status = $this->getConfigData('paid_orders_change_to');
-            $comment = Mage::helper('pagseguro')->__('Payment confirmed by PagSeguro (%s). PagSeguro Transaction: %s.', $this->getPaymentMethodType(), $this->getCode()) ;
+            $comment = $this->__('Payment confirmed by PagSeguro (%s). PagSeguro Transaction: %s.', $this->getPaymentMethodType(), $this->getCode()) ;
             $notify = true;
             $visibleOnFront = true;
                         
@@ -160,7 +160,7 @@ class OsStudios_PagSeguro_Model_Returns_Orders extends OsStudios_PagSeguro_Model
                                                        ->addObject($invoice->getOrder())
                                                        ->save();
                         
-            $comment = Mage::helper('pagseguro')->__('Invoice #%s was created.', $invoice->getIncrementId());
+            $comment = $this->__('Invoice #%s was created.', $invoice->getIncrementId());
             $order->setState($state, $status, $comment, true)->save();
 			
             $this->log($this->__('%sOrder was found in history: #%s', self::TABS, $order->getRealOrderId()));

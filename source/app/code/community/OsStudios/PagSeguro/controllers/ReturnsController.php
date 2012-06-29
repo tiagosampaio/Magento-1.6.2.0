@@ -36,6 +36,25 @@ class OsStudios_PagSeguro_ReturnsController extends OsStudios_PagSeguro_Controll
         $pagseguro = $this->getPagSeguro();
         $request = $this->getRequest();
         
+		if (!$request->isPost()) {
+            // That is a $_GET. Redirect to set page.
+            $orderId = Mage::getSingleton("core/session")->getPagseguroOrderId();
+            
+            if ($orderId) {
+                $storeId = $this->getOrderStoreId($orderId);
+                
+                if ($pagseguro->getConfigData('use_return_page_cms', $storeId)) {
+                    $url = $pagseguro->getConfigData('return_page', $storeId);
+                    Mage::getSingleton("core/session")->setPagseguroOrderId(null);
+                } else {
+                    $url = 'pagseguro/pay/success';
+                }
+            } else {
+                $url = '';
+            }
+            $this->_redirect($url);
+        }
+        
         if (($post = $request->getPost()) && $request->isPost()) {
         	
         	$returns = Mage::getModel('pagseguro/returns');

@@ -297,14 +297,14 @@ class OsStudios_PagSeguro_Model_Returns_Types_Transactions_Transaction extends O
             	$this->setDate($transaction['DataTransacao'])
                      ->setReference($transaction['Referencia'])
                      ->setCode($transaction['TransacaoID'])
-                     ->setType($transaction['TipoPagamento'])
+                     ->setPaymentMethodType($transaction['TipoPagamento'])
                      ->setStatus($transaction['StatusTransacao'])
             		;
             		
                 break;
         }
         
-        //$this->setStatus( self::STATUS_PAID )
+        //$this->setStatus( self::STATUS_PAID );
         
         return $this;
     }

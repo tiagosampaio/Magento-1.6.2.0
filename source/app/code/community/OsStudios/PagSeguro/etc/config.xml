@@ -130,6 +130,7 @@
                  <return_api_enable>1</return_api_enable>
                  <paid_orders_change_to>processing</paid_orders_change_to>
                  <canceled_orders_change_to>canceled</canceled_orders_change_to>
+                 <return_consult_range>30</return_consult_range>
              </pagseguro_config>
              <pagseguro_hpp>
                  <model>OsStudios_PagSeguro_Model_Hpp</model>

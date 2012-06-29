@@ -95,53 +95,10 @@ class OsStudios_PagSeguro_PayController extends OsStudios_PagSeguro_Controller_F
             $this->_redirect('');
         }
     }
-
-    
-    /**
-     * Ação utilizada para duas finalidades:
-     * - Redirecionar para a página de sucesso configurada, quando o comprador retorna à loja
-     * - Receber e controlar as requisições do retorno automático de dados
-     * 
-     */
-    public function returnAction()
-    {
-        $pagseguro = $this->getPagSeguro();
-		$request = $this->getRequest();
-        
-        if ($request->isPost()) {
-        	
-        	$post = $request->getPost();
-        	
-            // That is a $_POST. Process Automatic Return.
-            $pagseguro->setPostData($request)
-            		  ->setOrder(Mage::getModel('sales/order')->loadByIncrementId($post['Referencia']))
-            		  ->processReturn();
-            
-        } else {
-        	
-            // That is a $_GET. Redirect to set page.
-            $orderId = Mage::getSingleton("core/session")->getPagseguroOrderId();
-            
-            if ($orderId) {
-                $storeId = $this->getOrderStoreId($orderId);
-                
-                if ($pagseguro->getConfigData('use_return_page_cms', $storeId)) {
-                    $url = $pagseguro->getConfigData('return_page', $storeId);
-                    Mage::getSingleton("core/session")->setPagseguroOrderId(null);
-                } else {
-                    $url = 'pagseguro/pay/success';
-                }
-            } else {
-                $url = '';
-            }
-            $this->_redirect($url);
-            
-        }
-    }
     
     
     /**
-     * Exibe informações de conclusão do pagamento
+     * Shows success page after payment.
      * 
      */
     public function successAction()
@@ -172,8 +129,7 @@ class OsStudios_PagSeguro_PayController extends OsStudios_PagSeguro_Controller_F
     
 
     /**
-     * Retorna bloco de parcelamento de acordo
-     * com a mudança de preço do produto.
+     * Returns the installments block
      * 
      */
     public function installmentsAction()
