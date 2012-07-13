@@ -41,9 +41,13 @@
                                         <br/><br/>
                                         <hr />
                                         <br/>
-                                        The URL you need to configure for Automatic Returns and API Notifications is http://www.yourstore.com/pagseguro/returns/. 
+                                        The URL you need to configure for Automatic Returns and API Notifications is http://www.yourstore.com/pagseguro/returns/.
+                                        <br/>
+										The URL you need to set for redirect after payment process on PagSeguro is http://www.yourstore.com/pagseguro/pay/success/.  
                                         <br/><br/>
-                                        A URL para Retorno Automático e Notificações API do PagSeguro que você precisa configurar é http://www.sualoja.com.br/pagseguro/returns/. 
+                                        A URL para Retorno Automático e Notificações API do PagSeguro que você precisa configurar é http://www.sualoja.com.br/pagseguro/returns/.
+                                        <br/>
+										A URL para o redirecionamento de retorno á loja após a conclusão do pagamento no PagSeguro é http://www.sualoja.com.br/pagseguro/pay/success/ 
                                         <br/><br/>
                                         <hr />
                                     ]]>
