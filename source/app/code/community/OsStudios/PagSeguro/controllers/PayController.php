@@ -118,6 +118,11 @@ class OsStudios_PagSeguro_PayController extends OsStudios_PagSeguro_Controller_F
                 $this->_redirect($pagseguro->getConfigData('return_page', $storeId));
             } else {
                 $this->loadLayout();
+                
+                $session = $this->getCheckout();
+                $lastOrderId = $session->getLastOrderId();
+                Mage::dispatchEvent('checkout_onepage_controller_success_action', array('order_ids' => array($lastOrderId)));
+                
                 $this->renderLayout();
             }
             
